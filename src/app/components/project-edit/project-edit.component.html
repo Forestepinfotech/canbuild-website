@@ -1,0 +1,90 @@
+<div class="container-fluid">
+    <!-- Input -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+
+            <div class="card">
+                <div class="body">
+                    <h2 class="card-inside-title">Edit {{job.JobName}}</h2>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                    placeholder="Project Name"
+                                    name="jobName" [(ngModel)]="job.JobName" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                    placeholder="Address" name="jobAddress"
+                                    [(ngModel)]="job.JobAddress" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                    placeholder="City" name="jobCity"
+                                    [(ngModel)]="job.JobCity" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control"
+                                    placeholder="postal Code"
+                                    name="jobpostalCode"
+                                    [(ngModel)]="job.JobPostalCode" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i
+                                            class="zmdi zmdi-calendar"></i></span>
+                                </div>
+
+                                <div class="panel-body">
+                                    <input
+                                        class="form-control"
+                                        type="text"
+                                        mwlFlatpickr
+                                        [(ngModel)]="rangeValue"
+                                        [altInput]="true"
+                                        [convertModelValue]="true"
+                                        mode="range" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix ">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <button
+                                    class="btn btn-success btn-lg"
+                                    (click)="onSave()">Save</button>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix ml-4">
+                            <div class="col-sm-12">
+                                <button
+                                    class="btn btn-danger btn-lg"
+                                    (click)="onCancel()">Cancel</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

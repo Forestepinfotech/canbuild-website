@@ -1,0 +1,135 @@
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Project Create</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a>
+                    </li>
+
+                    <li class="breadcrumb-item active">Create</li>
+                </ul>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Input -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="card">
+                    <div class="body">
+                        <h2 class="card-inside-title">Basic Details</h2>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div *ngIf="!user">Loading
+                                        user types...</div>
+
+                                    <select class="form-control show-tick"
+                                        [(ngModel)]="selectedUserID"
+                                        name="selectedUserID"
+                                        *ngIf="user">
+                                        <option [value]=0 disabled
+                                            selected>--Please
+                                            select
+                                            a
+                                            user--</option>
+                                        <option
+                                            *ngFor="let user of user "
+                                            value="{{user.UserID}}">{{user.UserName}}</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="Project Name"
+                                        name="jobName" [(ngModel)]="jobName" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="Address" name="jobAddress"
+                                        [(ngModel)]="jobAddress" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="City" name="jobCity"
+                                        [(ngModel)]="jobCity" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="postal Code"
+                                        name="jobpostalCode"
+                                        [(ngModel)]="jobPostalCode" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i
+                                                class="zmdi zmdi-calendar"></i></span>
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            mwlFlatpickr
+                                            [(ngModel)]="rangeValue"
+                                            [altInput]="true"
+                                            [convertModelValue]="true"
+                                            mode="range" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div
+                                        class="text-danger">
+                                        {{formError}}
+                                    </div>
+                                    <button
+                                        class="btn btn-success btn-lg"
+                                        (click)="createJob()">Create</button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

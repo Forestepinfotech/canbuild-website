@@ -1,0 +1,155 @@
+<!-- <app-project-edit
+    *ngIf="editing"
+    [job]="selectedJob"
+    (save)="saveJob($event)"
+    (cancel)="cancelEdit()"> -->
+<!-- </app-project-edit> -->
+<div class="body_scroll" *ngIf="!editing">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Specifications</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>Create</strong> </h2>
+
+                    </div>
+
+                    <div class="form-group row clearfix">
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control"
+                                placeholder="Project Name"
+                                name="createSpec" [(ngModel)]="createSpec" />
+                        </div>
+                        <div class="col-sm-6">
+                            <button
+                                class="btn btn-success btn-lg my-0"
+                                (click)="createNewSpec()">Create</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div></div>
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>List</strong> </h2>
+
+                    </div>
+                </div>
+                <div class="body">
+
+                    <div
+                        *ngIf="!SpecificList || SpecificList.length<0">
+                        Nothing to show
+                    </div>
+                    <div class="table-responsive"
+                        *ngIf="SpecificList && SpecificList.length >0">
+
+                        <table
+                            class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let i of SpecificList">
+
+                                    <td>{{i.Specification}}</td>
+
+                                    <td>
+                                        <button class="btn btn-info btn-round"
+                                            (click)="editSpecific(i)">
+                                            <i class="zmdi zmdi-more"></i> Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                            (click)="deleteSpecific(i.SpecificationID)">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="editing">
+    <div class="container-fluid">
+        <!-- Input -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="card">
+                    <div class="body">
+                        <h2 class="card-inside-title">Edit</h2>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="Project Name"
+                                        name="jobName"
+                                        [(ngModel)]="editSpec.Specification" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix ">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <button
+                                        class="btn btn-success btn-lg"
+                                        (click)="saveEdit(editSpec)">Save</button>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix ml-4">
+                                <div class="col-sm-12">
+                                    <button
+                                        class="btn btn-danger btn-lg"
+                                        (click)="cancelEdit()">Cancel</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,139 @@
+<app-user-edit
+    *ngIf="editing"
+    [user]="selectedUser"
+    (save)="saveUser($event)"
+    (cancel)="cancelEdit()">
+</app-user-edit>
+<div class="body_scroll" *ngIf="!editing">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>User List</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>List</strong> </h2>
+
+                    </div>
+                </div>
+                <div class="body">
+
+                    <!-- <div *ngIf="userTypes.length===0">Loading
+                            user types...</div> -->
+
+                    <select class="form-control show-tick"
+                        [(ngModel)]="selectedUserTypeID"
+                        name="userType"
+                        *ngIf="userTypes.length > 0"
+                        (change)="onUserTypeChange(selectedUserTypeID)">
+
+                        <option
+                            *ngFor="let user of userTypes | slice:1 "
+                            value="{{user.UserTypeID}}">{{user.UserType}}</option>
+
+                    </select>
+                    <div
+                        *ngIf="!userList || userList.length<0">
+                        Nothing to show
+                    </div>
+                    <div class="table-responsive"
+                        *ngIf="userList && userList.length >0">
+
+                        <table
+                            class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                <tr>
+                                    <th>Active</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Company</th>
+                                    <th>Type</th>
+                                    <th>Trade</th>
+                                    <th>GST/WEB No</th>
+                                    <th>Docs</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let user of userList">
+                                    <td>
+                                        <div class="checkbox">
+                                            <input
+                                                [(ngModel)]="user.isActive"
+                                                id="checkbox{{ user.UserID }}"
+                                                type="checkbox"
+                                                [checked]="user.isActive === 1"
+                                                (change)="toggleActive(user, $event)">
+                                            <label
+                                                for="checkbox{{ user.UserID }}"></label>
+                                        </div>
+                                    </td>
+                                    <td>{{user.UserName}}</td>
+                                    <td>{{ user.UserFullName }}</td>
+                                    <td>{{ user.EmailID }}</td>
+                                    <td>{{ user.ContactNo }}</td>
+                                    <td>{{ user.Address+ ' ,'+ user.City +' ,'+
+                                        user.PostalCode+' ,'+
+                                        user.State+' ,'+user.Country
+                                        }}</td>
+                                    <td>{{user.CompanyName}}</td>
+                                    <td>{{ user.UserType }}</td>
+                                    <td>{{ user.TradeType }}</td>
+                                    <td>{{ user.SecurityNumber }}</td>
+                                    <td>
+                                        <button
+                                            class="btn btn-primary btn-round"
+                                            (click)="doc(user)">
+                                            <i class="zmdi zmdi-copy"></i>
+                                            Download
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info btn-round"
+                                            (click)="editUser(user)">
+                                            <i class="zmdi zmdi-more"></i> Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                            (click)="onDelete(user)">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

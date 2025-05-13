@@ -1,0 +1,152 @@
+<app-project-edit
+    *ngIf="editing"
+    [job]="selectedJob"
+    (save)="saveJob($event)"
+    (cancel)="cancelEdit()">
+</app-project-edit>
+<div class="body_scroll" *ngIf="!editing">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Job List</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>List</strong> </h2>
+
+                    </div>
+                </div>
+                <div class="body">
+
+                    <!-- <div *ngIf="userTypes.length===0">Loading
+                            user types...</div> -->
+
+                    <select class="form-control show-tick"
+                        name="userType"
+                        *ngIf="status.length > 0"
+                        [(ngModel)]="selectedStatus"
+                        (change)="onUserTypeChange(selectedStatus)">
+
+                        <option
+                            *ngFor="let i of status"
+                            value="{{i.statusId}}">{{i.statusName}}</option>
+
+                    </select>
+                    <div
+                        *ngIf="!jobList || jobList.length<0">
+                        Nothing to show
+                    </div>
+                    <div class="table-responsive"
+                        *ngIf="jobList && jobList.length >0">
+
+                        <table
+                            class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                <tr>
+                                    <th>Active</th>
+                                    <th>Job</th>
+                                    <th>Date</th>
+                                    <th>Address</th>
+                                    <th>Manager</th>
+                                    <th>Status</th>
+                                    <th>Docs</th>
+                                    <th>Status</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let job of jobList">
+                                    <td>
+                                        <div class="checkbox">
+                                            <input
+                                                id="checkbox{{ job.jobID }}"
+                                                type="checkbox"
+                                                [checked]="job.isActive === 1"
+                                                (change)="toggleActive(job, $event)">
+                                            <label
+                                                for="checkbox{{ job.jobID }}"></label>
+                                        </div>
+                                    </td>
+                                    <td>{{job.JobName}}</td>
+                                    <td>{{ job.ProjectDateRange }}</td>
+                                    <td>{{ job.JobAddress+' '+job.JobCity+' '+
+                                        job.JobPostalCode }}</td>
+                                    <td>{{ job.ManagerName }}</td>
+                                    <td>{{ job.StatusName
+                                        }}</td>
+
+                                    <td>
+                                        <button
+                                            class="btn btn-primary btn-round"
+                                            (click)="doc(job)">
+                                            <i class="zmdi zmdi-copy"></i>
+                                            Download
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button
+                                                class="btn btn-primary btn-round dropdown-toggle"
+                                                type="button"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+
+                                                {{job.StatusName}}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button
+                                                    class="dropdown-item"
+                                                    *ngFor="let item of status"
+                                                    (click)="onStatusSelect(item.statusId,job.JobID)">
+                                                    {{ item.statusName }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info btn-round"
+                                            (click)="editJob(job)">
+                                            <i class="zmdi zmdi-more"></i> Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                            (click)="deleteJob(job)">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

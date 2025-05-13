@@ -1,0 +1,8 @@
+{
+    "/api": {
+        "target": "https://triad.forestepinstitute.com",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

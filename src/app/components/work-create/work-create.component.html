@@ -1,0 +1,215 @@
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Work Create</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/dashboard"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a>
+                    </li>
+
+                    <li class="breadcrumb-item active">Create</li>
+                </ul>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Input -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="card">
+                    <div class="body">
+                        <h2 class="card-inside-title">Basic Details</h2>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div *ngIf="!projects">Loading
+                                        user types...</div>
+
+                                    <select class="form-control show-tick"
+                                        [(ngModel)]="selectedProject"
+                                        name="selectedProject"
+                                        *ngIf="projects">
+                                        <option [value]=0 disabled
+                                            selected>--Please
+                                            select
+                                            a
+                                            project--</option>
+                                        <option
+                                            *ngFor="let i of projects "
+                                            value="{{i.JobID}}">{{i.JobName}}</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-control show-tick"
+                                        [(ngModel)]="selectedUser"
+                                        name="selectedUser"
+                                        *ngIf="users">
+                                        <option [value]=0 disabled
+                                            selected>--Please
+                                            select
+                                            a
+                                            user--</option>
+                                        <option
+                                            *ngFor="let user of users "
+                                            value="{{user.UserID}}">{{user.UserName}}</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="Work Subject"
+                                        name="workSubject"
+                                        [(ngModel)]="workSubject" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-12 row-span-2">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        placeholder="Note" name="workNote"
+                                        [(ngModel)]="workNote" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i
+                                                    class="zmdi zmdi-calendar"></i></span>
+                                        </div>
+
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            mwlFlatpickr
+                                            [(ngModel)]="rangeValue"
+                                            [altInput]="true"
+                                            [enableTime]="true"
+                                            [convertModelValue]="true"
+                                            mode="range"
+                                            dateFormat="Y-m-d H:i"
+                                            [altFormat]="'F j, Y h:i K'" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <select class="form-control show-tick"
+                                        [(ngModel)]="selectedColor"
+                                        name="selectedColor"
+                                        *ngIf="color">
+                                        <option [value]=0 disabled
+                                            selected>--Please
+                                            select
+                                            a
+                                            Color--</option>
+                                        <ng-container
+                                            *ngFor="let i of color">
+
+                                            <option
+                                                value="{{i.ColorID}}"
+                                                *ngIf="i.ColorDetail">{{i.ColorDetail
+                                                }}</option>
+                                        </ng-container>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <select class="form-control show-tick"
+                                        [(ngModel)]="setPriority"
+                                        name="setPriority"
+                                        *ngIf="priority">
+                                        <option [value]=0 disabled
+                                            selected>--Please
+                                            select priority--</option>
+                                        <option
+                                            *ngFor="let i of priority "
+                                            value="{{i.PriorityID}}">{{i.PriorityName}}</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-6 d-flex  align-items-center">
+                                <div class="form-group">
+
+                                    <input
+                                        type="checkbox"
+                                        id="isRadiusCheck"
+                                        [(ngModel)]="isRadius"
+                                        class="mx-2"
+                                        name="isRadius" />
+                                    <label class="form-check-label ms-2"
+                                        for="isRadiusCheck">Enable
+                                        Radius</label>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="radiusInput">Radius (in
+                                        km)</label>
+                                    <input
+                                        type="text"
+                                        class="form-control "
+                                        id="radiusInput"
+                                        [(ngModel)]="radius"
+                                        name="radius"
+                                        placeholder="Enter radius" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div
+                                        class="text-danger">
+                                        {{formError}}
+                                    </div>
+                                    <button
+                                        class="btn btn-success btn-lg"
+                                        (click)="createWork()">Create</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

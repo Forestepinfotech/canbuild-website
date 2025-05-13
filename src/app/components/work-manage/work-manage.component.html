@@ -1,0 +1,166 @@
+<app-work-edit
+    *ngIf="editing"
+    [work]="selectedWork"
+    (save)="onSave($event)"
+    (cancel)="onCancel()">
+</app-work-edit>
+<p *ngIf="editing">Editing is true!</p>
+<div class="body_scroll" *ngIf="!editing">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Work List</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>List</strong> </h2>
+
+                    </div>
+                </div>
+                <div class="body">
+
+                    <div class="table-responsive"
+                        *ngIf="workList && workList.length >0">
+
+                        <table
+                            class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                <tr>
+                                    <th>Active</th>
+                                    <th>Job</th>
+                                    <th>Work</th>
+                                    <th>Note</th>
+                                    <th> Project Date</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Location</th>
+                                    <th>Radius</th>
+                                    <th>Priority</th>
+                                    <th>Color</th>
+                                    <th>Status</th>
+                                    <th>Requirements</th>
+                                    <th>Change Status</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let work of workList">
+                                    <td>
+                                        <div class="checkbox">
+                                            <input
+                                                id="checkbox{{ work.WorkID }}"
+                                                type="checkbox"
+                                                [checked]="work.isActive === 1"
+                                                (change)="toggleActive(work, $event)">
+                                            <label
+                                                for="checkbox{{ work.WorkID }}"></label>
+                                        </div>
+                                    </td>
+                                    <td>{{work.JobName}}</td>
+                                    <td>{{ work.WorkSubject }}</td>
+                                    <td>{{work.WorkDetail}}</td>
+                                    <td>{{work.ProjectDateRange}}</td>
+                                    <td>{{work.StartDate}}</td>
+                                    <td>{{work.EndDate}}</td>
+                                    <td>{{ work.JobAddress+' '+work.JobCity+' '+
+                                        work.JobPostalCode }}</td>
+                                    <td>{{ work.Radius }}</td>
+                                    <td>{{ work.PriorityName
+                                        }}</td>
+                                    <td
+                                        [style.backgroundColor]="work.Color_Hex">{{work.ColorName}}</td>
+                                    <td>{{work.StatusName}}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button
+                                                class="btn btn-primary btn-round dropdown-toggle"
+                                                type="button"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                name="workStatus">
+                                                Requirements
+                                            </button>
+                                            <div class="dropdown-menu p-2"
+                                                style="max-height: 200px; overflow-y: auto;">
+                                                <div
+                                                    *ngFor="let item of specificList">
+                                                    <label
+                                                        class="dropdown-item">
+                                                        <input
+                                                            type="checkbox"
+                                                            [(ngModel)]="item.selected"
+                                                            (change)="onStatusToggle(item, work,item.selected)" />
+                                                        {{ item.Specification }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button
+                                                class="btn btn-primary btn-round dropdown-toggle"
+                                                type="button"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                name="workStatus">
+                                                {{work.StatusName}}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button
+                                                    class="dropdown-item"
+                                                    *ngFor="let item of status"
+                                                    (click)="onStatusSelect(item.statusId,work)">
+                                                    {{ item.statusName }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info btn-round"
+                                            (click)="onEdit(work)">
+                                            <i class="zmdi zmdi-more"></i> Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                            (click)="onDelete(work)">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
