@@ -162,10 +162,11 @@ export class ProjectCreateComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(res)
+          alert("Job Created Successfully")
           this.resetForm();
         },
         error: (err) => {
-          console.log(err)
+          alert('Error' + err)
         }
       })
   }

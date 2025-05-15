@@ -165,10 +165,10 @@ export class UserCreateComponent implements OnInit {
       return false;
     }
 
-    if (!this.selectedFile) {
-      this.formError = 'User image is required';
-      return false;
-    }
+    // if (!this.selectedFile) {
+    //   this.formError = 'User image is required';
+    //   return false;
+    // }
 
     // Add email validation
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -178,11 +178,11 @@ export class UserCreateComponent implements OnInit {
     }
 
     // Add phone validation (simple check for now)
-    const phoneRegex = /^\d{10,15}$/;
-    if (!phoneRegex.test(this.phone.replace(/[^0-9]/g, ''))) {
-      this.formError = 'Please enter a valid phone number';
-      return false;
-    }
+    // const phoneRegex = /^\d{10,15}$/;
+    // if (!phoneRegex.test(this.phone.replace(/[^0-9]/g, ''))) {
+    //   this.formError = 'Please enter a valid phone number';
+    //   return false;
+    // }
 
     // Add postal code validation for Canadian format (A1A 1A1)
     const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
@@ -204,17 +204,17 @@ export class UserCreateComponent implements OnInit {
     if (!this.validateForm()) {
       return; // validateForm sets the error message
     }
-    const fileName = this.selectedFile!.name;
-    const fileExtension = fileName.split('.').pop();
-    const userImage = 'Web' + this.firstName + '.' + fileExtension;
-    console.log(userImage);
+    // const fileName = this.selectedFile!.name;
+    // const fileExtension = fileName.split('.').pop();
+    // const userImage = 'Web' + this.firstName + '.' + fileExtension;
+    // console.log(userImage);
     this.AdminUser.CreateUser(this.token, {
       UserName: this.firstName,
       UserFullName: this.lastName,
       UserType: this.userTypes.find((i) => i.UserTypeID === this.selectedUserTypeID)?.UserType || '',
       HashPassKey: "",
       EmailID: this.email,
-      UserImage: userImage,
+      UserImage: "dummys",
       ContactNo: this.phone,
       CreatedBy: 0,
       CreatedOn: new Date().toISOString(),
@@ -241,10 +241,12 @@ export class UserCreateComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         console.log('User created:', res)
-        this.uploadFiles(userImage)
+        alert("User Created!")
+        location.reload()
+        // this.uploadFiles(userImage)
 
       },
-      error: (err: any) => console.error('Error:', err)
+      error: (err: any) => alert('Error:' + err)
     });
   }
 

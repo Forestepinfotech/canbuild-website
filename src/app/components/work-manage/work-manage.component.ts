@@ -120,6 +120,7 @@ export class WorkManageComponent implements OnInit {
         next: (res) => {
           console.log('deeted')
           alert('Work Deleted')
+          location.reload()
         },
         error(err) {
           console.log(err)

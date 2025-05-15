@@ -210,9 +210,12 @@ export class WorkCreateComponent implements OnInit {
     this.AdminWork.CreateWork(this.token, payload).subscribe({
       next: (res) => {
         console.log(res)
+        alert("Work Created Successfully")
+        location.reload()
       },
       error: (err) => {
         console.log(err)
+        alert("Work NOT Created Successfully, Please try again")
       }
     })
 
