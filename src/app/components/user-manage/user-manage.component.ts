@@ -55,7 +55,7 @@ export class UserManageComponent implements OnInit {
   onUserTypeChange(userTypeId: number) {
     console.log('changes')
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
+      this.userList = "changing";
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';

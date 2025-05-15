@@ -32,8 +32,14 @@
                         <div class="row clearfix">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <div *ngIf="!projects">Loading
-                                        user types...</div>
+                                    <div *ngIf="!projects"><div
+                                            class="d-flex justify-content-center w-100">
+                                            <div
+                                                class="spinner-border"
+                                                role="status">
+                                                <span
+                                                    class="sr-only">Loading...</span>
+                                            </div></div></div>
 
                                     <select class="form-control show-tick"
                                         [(ngModel)]="selectedProject"
@@ -55,6 +61,16 @@
                         <div class="row clearfix">
                             <div class="col-sm-12">
                                 <div class="form-group">
+                                    <div *ngIf="!users">
+                                        <div
+                                            class="d-flex justify-content-center w-100">
+                                            <div
+                                                class="spinner-border"
+                                                role="status">
+                                                <span
+                                                    class="sr-only">Loading...</span>
+                                            </div></div>
+                                    </div>
                                     <select class="form-control show-tick"
                                         [(ngModel)]="selectedUser"
                                         name="selectedUser"
@@ -122,6 +138,16 @@
                         <div class="row clearfix">
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <div *ngIf="!color">
+                                        <div
+                                            class="d-flex justify-content-center w-100">
+                                            <div
+                                                class="spinner-border"
+                                                role="status">
+                                                <span
+                                                    class="sr-only">Loading...</span>
+                                            </div></div>
+                                    </div>
                                     <select class="form-control show-tick"
                                         [(ngModel)]="selectedColor"
                                         name="selectedColor"
@@ -145,6 +171,16 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <div *ngIf="!priority">
+                                        <div
+                                            class="d-flex justify-content-center w-100">
+                                            <div
+                                                class="spinner-border"
+                                                role="status">
+                                                <span
+                                                    class="sr-only">Loading...</span>
+                                            </div></div>
+                                    </div>
                                     <select class="form-control show-tick"
                                         [(ngModel)]="setPriority"
                                         name="setPriority"

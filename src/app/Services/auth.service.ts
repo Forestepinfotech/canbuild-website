@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private ApiServices: ApiService,
     private httpClient: HttpClient
-  ) {}
+  ) { }
 
   Login(login: LoginDetails): Observable<any> {
     const params = new HttpParams()

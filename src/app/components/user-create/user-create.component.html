@@ -34,7 +34,8 @@
                                     <div *ngIf="userTypes.length === 0">Loading
                                         user types...</div>
 
-                                    <select class="form-control show-tick"
+                                    <select *ngIf="userTypes.length !== 0"
+                                        class="form-control show-tick"
                                         [(ngModel)]="selectedUserTypeID"
                                         name="userType"
                                         required>

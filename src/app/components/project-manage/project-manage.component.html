@@ -40,9 +40,6 @@
                 </div>
                 <div class="body">
 
-                    <!-- <div *ngIf="userTypes.length===0">Loading
-                            user types...</div> -->
-
                     <select class="form-control show-tick"
                         name="userType"
                         *ngIf="status.length > 0"
@@ -54,12 +51,19 @@
                             value="{{i.statusId}}">{{i.statusName}}</option>
 
                     </select>
+                    <div *ngIf="jobList&&jobList==='changing'">
+                        <div class="d-flex justify-content-center w-100">
+                            <div
+                                class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div></div>
+                    </div>
                     <div
-                        *ngIf="!jobList || jobList.length<0">
+                        *ngIf="!jobList">
                         Nothing to show
                     </div>
                     <div class="table-responsive"
-                        *ngIf="jobList && jobList.length >0">
+                        *ngIf="jobList!=='changing' && jobList.length >0">
 
                         <table
                             class="table table-bordered table-striped table-hover dataTable js-exportable">

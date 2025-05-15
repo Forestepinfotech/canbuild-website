@@ -40,9 +40,15 @@
                     </div>
                 </div>
                 <div class="body">
-
+                    <div *ngIf="workList&&workList==='changing'">
+                        <div class="d-flex justify-content-center w-100">
+                            <div
+                                class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div></div>
+                    </div>
                     <div class="table-responsive"
-                        *ngIf="workList && workList.length >0">
+                        *ngIf="workList && workList!=='changing'">
 
                         <table
                             class="table table-bordered table-striped table-hover dataTable js-exportable">

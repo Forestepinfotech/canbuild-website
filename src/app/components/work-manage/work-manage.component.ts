@@ -37,7 +37,7 @@ export class WorkManageComponent implements OnInit {
   specificList: any;
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
+      this.workList = 'changing'
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';
