@@ -13,15 +13,15 @@ import { RightsidebarComponent } from "../rightsidebar/rightsidebar.component";
 })
 export class AdminComponent {
   isLoading = false;
-  router=inject(Router)
-  constructor() {}
+  router = inject(Router)
+  constructor() { }
 
   LogoutAdmin() {
-    alert("hell0")
+
     localStorage.removeItem('Token');
     localStorage.removeItem('CompanyID');
     localStorage.removeItem('UserID');
-     localStorage.removeItem('UserType');
+    localStorage.removeItem('UserType');
     this.router.navigate(['/login']);
   }
 }

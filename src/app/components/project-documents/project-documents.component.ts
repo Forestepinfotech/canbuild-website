@@ -102,7 +102,7 @@ export class ProjectDocumentsComponent implements OnInit {
         if (res.Status) {
           this.docs = res.Result;
         } else {
-          this.toaster.error('Error getting Docs, Try Again')
+          this.toaster.error('Error ', res.Message)
         }
 
       });
@@ -112,7 +112,7 @@ export class ProjectDocumentsComponent implements OnInit {
           this.documents = data.Result;
         },
         error: (err) => {
-          console.error('Error fetching dashboard data:', err);
+          this.toaster.error('Error ', err)
         }
       });
   }
@@ -163,10 +163,10 @@ export class ProjectDocumentsComponent implements OnInit {
       this.adminJob.CreateJobDoc(this.token, jobDetail).subscribe({
         next: (response) => {
           if (response.Status) {
-            alert("Permission created");
+
             this.loadDocs();
           } else {
-            console.log(response);
+            this.toaster.error('Error ', response.Message)
           }
         },
         error: (err) => {
@@ -211,14 +211,14 @@ export class ProjectDocumentsComponent implements OnInit {
       this.adminJob.CreateJobDoc(this.token, jobDetail).subscribe({
         next: (response) => {
           if (response.Status) {
-            alert("Permission created");
+            this.toaster.success('Permission Updated')
             this.loadDocs();
           } else {
-            console.log(response);
+            this.toaster.error('Error ', response.Message)
           }
         },
         error: (err) => {
-          console.error('Error creating job document:', err);
+          this.toaster.error('Error ', err)
         }
       });
 
@@ -261,14 +261,14 @@ export class ProjectDocumentsComponent implements OnInit {
       this.adminJob.CreateJobDoc(this.token, jobDetail).subscribe({
         next: (response) => {
           if (response.Status) {
-            alert("Permission created");
+            this.toaster.success('Permission Created')
             this.loadDocs();
           } else {
-            console.log(response);
+            this.toaster.error('Error ', response.Message)
           }
         },
         error: (err) => {
-          console.error('Error creating job document:', err);
+          this.toaster.error('Error ', err)
         }
       });
 
@@ -306,20 +306,20 @@ export class ProjectDocumentsComponent implements OnInit {
         UserType: "Manager"
       };
       this.adminJob.CreateJobDoc(this.token, jobDetail).subscribe({
-        next: (res) => {
-          if (res.Status) {
-            this.documents = res.Result;
+        next: (response) => {
+          if (response.Status) {
+            this.toaster.success('Permission Created')
+            this.loadDocs();
           } else {
-            this.toaster.error('Error getting document IDs');
+            this.toaster.error('Error ', response.Message)
           }
         },
         error: (err) => {
-          this.toaster.error('Error fetching dashboard data');
-          console.error(err);
+          this.toaster.error('Error ', err)
         }
       });
-    }
 
+    }
   }
 
 
@@ -336,11 +336,11 @@ export class ProjectDocumentsComponent implements OnInit {
           if (res.Status) {
             this.toaster.success("Permission updated");
           } else {
-            this.toaster.error(res.Message || "Failed to update permission");
+            this.toaster.error(res.Message);
           }
         },
         error: (err) => {
-          this.toaster.error('Error updating permission');
+          this.toaster.error('Error ', err);
           console.error(err);
         }
       });
@@ -367,7 +367,9 @@ export class ProjectDocumentsComponent implements OnInit {
   }
 
   downloadDoc(doc: any) {
-    alert("Can not fetch the doc at the moment!")
+    this.toaster.error('Error ', 'Cant fetch docs at the moment')
+
+
     // Implement document download
     // Example implementation:
     // const url = `http://triad.forestepinstitute.com/api/Job/DownloadDoc?documentid=${doc.DocumentID}&token=${this.token}`;

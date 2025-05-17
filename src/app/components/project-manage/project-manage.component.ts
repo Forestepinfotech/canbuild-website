@@ -53,7 +53,7 @@ export class ProjectManageComponent implements OnInit {
           this.jobList = response.Result;
 
         } else {
-          this.toastr.error('Error Getting Project, Try again')
+          this.toastr.error('Error ', response.Message)
         }
       });
   }
@@ -67,7 +67,7 @@ export class ProjectManageComponent implements OnInit {
         this.toastr.success('Project Updated Successfully')
       }
       else {
-        this.toastr.error('Error, Project was not updated successfully')
+        this.toastr.error('Error ', response.Message)
       }
     });
 
@@ -78,7 +78,7 @@ export class ProjectManageComponent implements OnInit {
         this.toastr.success('Project Status Updated Successfully')
         this.onUserTypeChange(this.selectedStatus);
       } else {
-        this.toastr.error('Error, Project Status was not updated successfully')
+        this.toastr.error('Error ', response.Message)
       }
     });
   }
@@ -109,7 +109,7 @@ export class ProjectManageComponent implements OnInit {
           this.onUserTypeChange(this.selectedStatus);
         }
         else {
-          this.toastr.error('Project was not deleted, Try Again')
+          this.toastr.error('Error ', response.Message)
         }
       })
   }
@@ -146,7 +146,7 @@ export class ProjectManageComponent implements OnInit {
           this.editing = false
         }
         else {
-          this.toastr.error('ERROR, Try again')
+          this.toastr.error('Error ', res.Message)
         }
       })
   }

@@ -59,7 +59,7 @@ export class AdminColorComponent implements OnInit {
             this.toastr.success('Color Deleted')
             location.reload()
           } else {
-            this.toastr.error('Error deleting the color, Please Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -95,7 +95,7 @@ export class AdminColorComponent implements OnInit {
             this.toastr.success('Color Updated')
             location.reload()
           } else {
-            this.toastr.error('Error updating the color, Please Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {

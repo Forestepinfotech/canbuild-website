@@ -36,7 +36,7 @@ export class AdminRequirementsComponent implements OnInit {
             if (value.Status) {
               this.SpecificList = value.Result;
             } else {
-              this.toastr.error('Error Getting the list, Please Try Again Later')
+              this.toastr.error('Error ', value.Message)
             }
           },
           error: (res) => {
@@ -58,7 +58,7 @@ export class AdminRequirementsComponent implements OnInit {
             location.reload()
           }
           else {
-            this.toastr.error('Error Getting the list, Please Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -86,7 +86,7 @@ export class AdminRequirementsComponent implements OnInit {
             this.toastr.success('Requirement Created')
             location.reload()
           } else {
-            this.toastr.error('Error creating the requirement, Please Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -112,7 +112,7 @@ export class AdminRequirementsComponent implements OnInit {
             this.toastr.success('Requirement Updated')
             location.reload()
           } else {
-            this.toastr.error('Error updating the requirement, Please Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {

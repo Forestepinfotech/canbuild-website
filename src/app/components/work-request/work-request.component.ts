@@ -36,7 +36,7 @@ export class WorkRequestComponent implements OnInit {
           if (res.Status) {
             this.request = res.Result;
           } else {
-            this.toastr.error('Error getting request, Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -112,7 +112,7 @@ export class WorkRequestComponent implements OnInit {
             request.isApproval = 0;
             this.toastr.success('Request Rejected')
           } else {
-            this.toastr.error('Error approving request, Try Again Later')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => this.toastr.error('Error ' + err)

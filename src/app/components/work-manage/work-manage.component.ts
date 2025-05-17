@@ -63,7 +63,7 @@ export class WorkManageComponent implements OnInit {
             if (res.Status) {
               this.workList = res.Result
             } else {
-              this.toastr.error('Error Getting Work, try again')
+              this.toastr.error('Error ', res.Message)
             }
           },
           error: (err) => {
@@ -77,7 +77,7 @@ export class WorkManageComponent implements OnInit {
             if (value.Status) {
               this.specificList = value.Result;
             } else {
-              this.toastr.error('Error Getting Specifications, try again')
+              this.toastr.error('Error ', value.Message)
             }
           },
           error: (res) => {
@@ -100,7 +100,7 @@ export class WorkManageComponent implements OnInit {
         if (response.Status) {
           this.toastr.success('User Updated Successfully')
         } else {
-          this.toastr.error('Error updating the work, Please try again')
+          this.toastr.error('Error ', response.Message)
         }
 
       },
@@ -132,7 +132,7 @@ export class WorkManageComponent implements OnInit {
             this.toastr.success('Updated the user status ')
           }
           else {
-            this.toastr.error('Error updating the work, Please try again')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -153,7 +153,7 @@ export class WorkManageComponent implements OnInit {
             work.StatusName = selectedStatus.statusName;
           }
         } else {
-          this.toastr.error('Error updating the work, Please try again')
+          this.toastr.error('Error ', response.Message)
         }
       },
       error: (err) => {
@@ -188,7 +188,7 @@ export class WorkManageComponent implements OnInit {
             this.toastr.success('Work Deleted')
             location.reload()
           } else {
-            this.toastr.error('Error Deleting the work, Please try again')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {
@@ -247,9 +247,9 @@ export class WorkManageComponent implements OnInit {
         next: (res) => {
           if (res.Status) {
             this.editing = false
-            this.toastr.error('Work Saved Successfully')
+            this.toastr.success('Work Saved Successfully')
           } else {
-            this.toastr.error('Error saving the work, Please try again')
+            this.toastr.error('Error ', res.Message)
           }
         },
         error: (err) => {

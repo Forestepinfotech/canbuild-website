@@ -58,7 +58,7 @@ export class WorkCreateComponent implements OnInit {
             if (data.Status) {
               this.projects = data.Result;
             } else {
-              this.toastr.error('Error Getting Job List')
+              this.toastr.error('Error ', data.Message)
             }
           },
           error: (err) => {
@@ -78,7 +78,7 @@ export class WorkCreateComponent implements OnInit {
           this.users = response.Result;
 
         } else {
-          this.toastr.error('Error Getting User List')
+          this.toastr.error('Error ', response.Message)
         }
       });
 
@@ -88,7 +88,7 @@ export class WorkCreateComponent implements OnInit {
             if (data.Status) {
               this.color = data.Result;
             } else {
-              this.toastr.error('Error Getting Color List')
+              this.toastr.error('Error ', data.Message)
             }
           },
           error: (err) => {
@@ -102,7 +102,7 @@ export class WorkCreateComponent implements OnInit {
             if (res.Status) {
               this.priority = res.Result;
             } else {
-              this.toastr.error('Error Getting Priority List')
+              this.toastr.error('Error ', res.Message)
             }
           },
           error: (err) => {
@@ -229,7 +229,7 @@ export class WorkCreateComponent implements OnInit {
           this.toastr.success('Work Created Successfully')
           location.reload()
         } else {
-          this.toastr.error('Error Creating Work. Try Again')
+          this.toastr.error('Error ', res.Message)
         }
       },
       error: (err) => {

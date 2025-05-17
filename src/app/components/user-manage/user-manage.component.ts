@@ -42,7 +42,7 @@ export class UserManageComponent implements OnInit {
             this.onUserTypeChange(this.selectedUserTypeID);
           }
           else {
-            this.toastr.error('Error Getting User Types, Try Again')
+            this.toastr.error('Error ', response.Message)
           }
 
         });
@@ -76,7 +76,7 @@ export class UserManageComponent implements OnInit {
         if (response.Status) {
           this.userList = response.Result;
         } else {
-          this.toastr.error('Error Getting Users, Try Again')
+          this.toastr.error('Error ', response.Message)
         }
 
 
@@ -125,7 +125,7 @@ export class UserManageComponent implements OnInit {
         this.toastr.success('User Updated Successfully')
         this.onUserTypeChange(updatedUser.UserTypeID);
       } else {
-        this.toastr.error('Error Updating User, Try again')
+        this.toastr.error('Error ', response.Message)
       }
 
     });
@@ -143,14 +143,14 @@ export class UserManageComponent implements OnInit {
       if (response.Status) {
         this.toastr.success('User Updated Successfully')
       } else {
-        this.toastr.error('Error Updating User, Try again')
+        this.toastr.error('Error ', response.Message)
       }
 
     });
 
   }
   doc(user: any) {
-    alert("Error! Doc cant be shown at this moment.")
+    this.toastr.error('Error ', 'Doc cant be shown at the moment')
   }
   onDelete(user: any) {
     if (!confirm(`Are you sure you want to delete user: ${user.UserName}?`)) {
@@ -162,7 +162,7 @@ export class UserManageComponent implements OnInit {
         this.onUserTypeChange(user.UserTypeID);
       }
       else {
-        this.toastr.error('Error Deeleting User, Try again')
+        this.toastr.error('Error ', response.Message)
       }
     })
   }

@@ -53,7 +53,7 @@ export class UserCreateComponent implements OnInit {
               this.userTypes = response.Result;
 
             } else {
-              this.toastr.error('Error Loading User Types, Try Again')
+              this.toastr.error('Error ', response.Message)
             }
 
           }
@@ -65,7 +65,7 @@ export class UserCreateComponent implements OnInit {
               this.employeeTypes = response.Result;
 
             } else {
-              this.toastr.error('Error Loading Color , Try Again')
+              this.toastr.error('Error ', response.Message)
             }
 
           })
@@ -99,7 +99,7 @@ export class UserCreateComponent implements OnInit {
           if (response.Status) {
             console.log(response.Message)
           } else {
-            this.toastr.error('Error  ', 'Uploading the File Try Again')
+            this.toastr.error('Error ', response.Message)
           }
 
         });
@@ -232,7 +232,7 @@ export class UserCreateComponent implements OnInit {
         this.resetForm()
       }
       else {
-        this.toastr.error('Error ,user NOT created successfully')
+        this.toastr.error('Error ', response.Message)
       }
     })
   }

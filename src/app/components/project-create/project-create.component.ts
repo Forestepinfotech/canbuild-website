@@ -166,7 +166,7 @@ export class ProjectCreateComponent implements OnInit {
           this.toastr.success('Project Created Successfully')
           this.resetForm();
         } else {
-          this.toastr.error('The Projct Was Not Created, Try Again')
+          this.toastr.error('Error ', response.Message)
         }
       })
   }
