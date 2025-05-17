@@ -1,3 +1,36 @@
 @import '../node_modules/@syncfusion/ej2-material-theme/styles/material.css';
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/flatpickr/dist/flatpickr.min.css";
+
+.profile {
+    width: 50px;
+}
+
+section {
+    height: 100vh;
+}
+
+
+section.content {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.scroll-container {
+    height: calc(100vh - 200px);
+
+    overflow-y: auto;
+    padding-right: 10px;
+    position: fixed;
+    bottom: 10px;
+
+    overflow-x: revert-layer;
+    width: 80%;
+
+}
+
+/* Optional: Prevent double scrollbars inside table-responsive */
+.table-responsive {
+    position: relative;
+    overflow: visible;
+}

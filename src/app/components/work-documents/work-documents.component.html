@@ -1,1 +1,187 @@
-<p>work-documents works!</p>
+
+
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Job List</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Job
+                            Document</a></li>
+
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>Job Documents of
+                                {{work.WorkSubject}}</strong> </h2>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <button
+                                class="btn btn-danger btn-md"
+                                (click)="onCancel()">Go Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100" *ngIf="!docs"><div
+                    class="d-flex justify-content-center w-100">
+                    <div
+                        class="spinner-border"
+                        role="status">
+                        <span
+                            class="sr-only">Loading...</span>
+                    </div></div></div>
+            <div class="table-responsive"
+                *ngIf="docs!=='changing' && docs">
+
+                <table
+                    class="table table-bordered table-striped table-hover dataTable js-exportable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Document</th>
+                            <th>Detail</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                            <th>Download</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let i of docs">
+                            <td>{{i.UserName}}</td>
+                            <td>{{i.DocumentName}}</td>
+                            <td>{{i.DocumentDetail}}</td>
+                            <td>{{i.DocumentType}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button
+                                        class="btn  btn-sm dropdown-toggle"
+                                        [ngClass]="{
+        'btn-success': i.isActive === 1,
+        'btn-warning': i.isActive === 0,
+        'btn-secondary': i.isActive === -1
+      }"
+                                        type="button"
+                                        id="actionMenuButton{{i.id}}"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{ i.isActive === 1 ? 'Approved' :
+                                        i.isActive === 0 ? 'Rejected' : 'Action'
+                                        }}
+                                    </button>
+
+                                    <div class="dropdown-menu"
+                                        [attr.aria-labelledby]="'actionMenuButton' + i.id">
+                                        <a class="dropdown-item"
+                                            (click)="approveDoc(i)">Approve</a>
+                                        <a class="dropdown-item"
+                                            (click)="rejectDoc(i)">Reject</a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <button
+                                    class="btn btn-primary btn-round"
+                                    (click)="downloadDoc(i)">
+                                    <i class="zmdi zmdi-copy"></i>
+                                    Download
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                    (click)="deleteDoc(i)">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="d-flex justify-content-center w-100">
+                <div class="pagination-controls mt-4">
+                    <button class="btn btn-info "
+                        (click)="loadDocs(currentPage - 1)"
+                        [disabled]="currentPage === 1"><i
+                            class="bi bi-arrow-left"></i></button>
+
+                    <span class="m-4">Page {{ currentPage }}</span>
+
+                    <button class="btn btn-info"
+                        (click)="loadDocs(currentPage + 1)"><i
+                            class="bi bi-arrow-right"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="header">
+            <h2><strong>Add New Document</strong></h2>
+        </div>
+        <div class="body">
+            <form (ngSubmit)="onSubmitNewDoc()" #uploadForm="ngForm"
+                enctype="multipart/form-data">
+                <div class="row clearfix">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Upload Document</label>
+                            <input type="file" class="form-control"
+                                (change)="onFileSelected($event)" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Document Type</label>
+                            <select class="form-control"
+                                [(ngModel)]="newDoc.DocumentTypeID"
+                                name="docType" required>
+                                <option *ngFor="let type of typeList"
+                                    [value]="type.id">{{ type.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Document Detail</label>
+                            <input type="text" class="form-control"
+                                [(ngModel)]="newDoc.DocumentDetail"
+                                name="doc detail"
+                                required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-success" type="submit"
+                        [disabled]="!uploadForm.form.valid">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

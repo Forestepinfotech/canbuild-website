@@ -6,6 +6,8 @@ import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
 import { forkJoin } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { response } from 'express';
 @Component({
   selector: 'app-project-create',
   imports: [CommonModule, FormsModule, FlatpickrDirective],
@@ -17,6 +19,7 @@ export class ProjectCreateComponent implements OnInit {
   constructor(
     private AdminProject: AdminProject,
     private AdminUser: AdminUser
+    , private toastr: ToastrService
   ) { }
   token: string = "";
   companyId: string = "";
@@ -46,13 +49,12 @@ export class ProjectCreateComponent implements OnInit {
       const request504 = this.AdminUser.GetUsers(companyID, token, '-1', 1, 504, 1, 100);
       const request506 = this.AdminUser.GetUsers(companyID, token, '-1', 1, 506, 1, 100);
 
-      forkJoin([request504, request506]).subscribe({
-        next: ([res504, res506]) => {
-          this.user = [...(res504?.Result || []), ...(res506?.Result || [])];
-          console.log(this.user);
-        },
-        error: (err) => {
-          console.log(err);
+      forkJoin([request504, request506]).subscribe(([response504, response506]) => {
+        console.log(response504, response506)
+        if (response504.Status || response506.Status) {
+          this.user = [...(response504?.Result || []), ...(response506?.Result || [])];
+        } else {
+          this.toastr.error('Error Getting Users')
         }
       });
     }
@@ -159,14 +161,12 @@ export class ProjectCreateComponent implements OnInit {
     };
     console.log(payoad)
     this.AdminProject.CreateJob(this.token, payoad)
-      .subscribe({
-        next: (res) => {
-          console.log(res)
-          alert("Job Created Successfully")
+      .subscribe((response) => {
+        if (response.Status) {
+          this.toastr.success('Project Created Successfully')
           this.resetForm();
-        },
-        error: (err) => {
-          alert('Error' + err)
+        } else {
+          this.toastr.error('The Projct Was Not Created, Try Again')
         }
       })
   }

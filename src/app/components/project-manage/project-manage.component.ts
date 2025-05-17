@@ -1,27 +1,34 @@
-import { JobDetail } from './../../Model/project.Model';
+import { JobNameFilterPipe } from './jobfilter.pipe';
 import { AdminProject } from './../../Services/admin/projects';
 import { CommonModule } from '@angular/common';
 import { Component, CSP_NONCE, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProjectEditComponent } from "../project-edit/project-edit.component";
+import { ProjectDocumentsComponent } from "../project-documents/project-documents.component";
+import { ToastrService } from 'ngx-toastr';
+import { response } from 'express';
 
 @Component({
   selector: 'app-project-manage',
-  imports: [CommonModule, FormsModule, ProjectEditComponent],
+  imports: [CommonModule, FormsModule, ProjectEditComponent, ProjectDocumentsComponent, JobNameFilterPipe],
   templateUrl: './project-manage.component.html',
   styleUrl: './project-manage.component.css'
 })
 export class ProjectManageComponent implements OnInit {
+  jobSearch: string = '';
+
   selectedJob: any;
   jobList: any;
   editing: boolean = false;
+  docs: boolean = false;
   token: string = "";
   companyId: string = "";
   userId: string = ""
   status: { statusName: string; statusId: number }[] = [{ statusName: 'pending', statusId: 1009 }, { statusName: 'Completed', statusId: 1008 }, { statusName: 'In Progress', statusId: 1012 }];
   selectedStatus: number = 1009;
   constructor(
-    private AdminProject: AdminProject
+    private AdminProject: AdminProject,
+    private toastr: ToastrService
   ) { }
   ngOnInit() {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -41,14 +48,12 @@ export class ProjectManageComponent implements OnInit {
     this.jobList = 'changing'
     this.selectedStatus = status;
     this.AdminProject.GetJob(this.token, this.companyId, -1, status, -1, -1)
-      .subscribe({
-        next: (data) => {
-          console.log('Dashboard data:', data);
-          this.jobList = data.Result;
-          console.log(this.jobList)
-        },
-        error: (err) => {
-          console.error('Error fetching dashboard data:', err);
+      .subscribe((response) => {
+        if (response.Status) {
+          this.jobList = response.Result;
+
+        } else {
+          this.toastr.error('Error Getting Project, Try again')
         }
       });
   }
@@ -57,57 +62,58 @@ export class ProjectManageComponent implements OnInit {
     const checkbox = event.target as HTMLInputElement;
     job.isActive = checkbox.checked ? 1 : 0;
     const token = localStorage.getItem('Token') || '';
-    this.AdminProject.UpdateJobStatus(token, this.userId, job.isActive, job.JobID).subscribe({
-      next: (response) => {
-        console.log('User updated successfully:', response);
-        alert(response.Message)
-
-      },
-      error: (err) => {
-        console.error('Error updating user:', err);
+    this.AdminProject.UpdateJobStatus(token, this.userId, job.isActive, job.JobID).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success('Project Updated Successfully')
+      }
+      else {
+        this.toastr.error('Error, Project was not updated successfully')
       }
     });
 
   }
   onStatusSelect(status: number, jobId: number) {
-    console.log(jobId)
-    this.AdminProject.UpdateJobWorkStatus(this.token, this.userId, status, jobId).subscribe({
-      next: (response) => {
-        console.log('User updated successfully:', response);
-        alert(response.Message)
+    this.AdminProject.UpdateJobWorkStatus(this.token, this.userId, status, jobId).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success('Project Status Updated Successfully')
         this.onUserTypeChange(this.selectedStatus);
-
-      },
-      error: (err) => {
-        console.error('Error updating user:', err);
+      } else {
+        this.toastr.error('Error, Project Status was not updated successfully')
       }
     });
   }
   doc(user: any) {
-    alert("Error! Doc cant be shown at this moment.")
+    this.selectedJob = user;
+    this.editing = false; // <-- add this
+    this.docs = true;
   }
+
   editJob(job: any) {
     this.selectedJob = job;
-    console.log(this.selectedJob)
+    this.docs = false; // <-- add this
     this.editing = true;
   }
   cancelEdit() {
     this.editing = false;
+    this.docs = false;
   }
+
   deleteJob(job: any) {
+    if (!confirm(`Are you sure you want to delete project: ${job.JobName}?`)) {
+      return;
+    }
     this.AdminProject.DeleteJob(this.token, this.userId, job.JobID)
-      .subscribe({
-        next: (res) => {
-          alert(res.Message)
+      .subscribe((response) => {
+        if (response.Status) {
+          this.toastr.success('Project Deleted Successfully')
           this.onUserTypeChange(this.selectedStatus);
-        },
-        error: (err) => {
-          alert("Try Again")
+        }
+        else {
+          this.toastr.error('Project was not deleted, Try Again')
         }
       })
   }
   saveJob(updatedJob: any) {
-    console.log(updatedJob)
     this.AdminProject.UpdateJob(this.token, {
       JobID: updatedJob.JobID,
       JobName: updatedJob.JobName,
@@ -133,14 +139,14 @@ export class ProjectManageComponent implements OnInit {
       StatusID: updatedJob.StatusID,
       StatusName: updatedJob.StatusName
     })
-      .subscribe({
-        next: (res) => {
-          alert(res.Message)
-          console.log(res)
+      .subscribe((res) => {
+        if (res.Status) {
+          this.toastr.success('Successfully Updated the Project')
+
           this.editing = false
-        },
-        error: (err) => {
-          console.log(err)
+        }
+        else {
+          this.toastr.error('ERROR, Try again')
         }
       })
   }

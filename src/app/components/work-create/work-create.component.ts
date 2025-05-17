@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
 import { WorkModel } from '../../Model/Work.Model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-work-create',
@@ -17,7 +18,7 @@ import { WorkModel } from '../../Model/Work.Model';
 })
 export class WorkCreateComponent implements OnInit {
   constructor(
-    private AdminProject: AdminProject, private AdminUser: AdminUser, private AdminDashboard: AdminDashboard, private AdminWork: AdminWork
+    private AdminProject: AdminProject, private AdminUser: AdminUser, private AdminDashboard: AdminDashboard, private AdminWork: AdminWork, private toastr: ToastrService
   ) {
 
   }
@@ -54,12 +55,14 @@ export class WorkCreateComponent implements OnInit {
       this.AdminProject.GetJob(this.token, this.companyId, -1, -1, -1, -1)
         .subscribe({
           next: (data) => {
-            console.log('Dashboard data:', data);
-            this.projects = data.Result;
-            console.log(this.projects)
+            if (data.Status) {
+              this.projects = data.Result;
+            } else {
+              this.toastr.error('Error Getting Job List')
+            }
           },
           error: (err) => {
-            console.error('Error fetching dashboard data:', err);
+            this.toastr.error('Error' + err)
           }
         });
       this.AdminUser.GetUsers(
@@ -71,26 +74,39 @@ export class WorkCreateComponent implements OnInit {
         1,
         100
       ).subscribe(response => {
-        this.users = response.Result;
-        console.log("useres", this.users)
+        if (response.Status) {
+          this.users = response.Result;
+
+        } else {
+          this.toastr.error('Error Getting User List')
+        }
       });
 
       this.AdminDashboard.GetColorNotes(companyID, token, '-1')
         .subscribe({
           next: (data) => {
-            console.log('color:', data);
-            this.color = data.Result;
+            if (data.Status) {
+              this.color = data.Result;
+            } else {
+              this.toastr.error('Error Getting Color List')
+            }
           },
           error: (err) => {
-            console.error('Error fetching dashboard data:', err);
+            this.toastr.error('Error' + err)
           }
         });
 
       this.AdminWork.GetPriorityWork(token, -1)
         .subscribe({
           next: (res) => {
-            console.log('priority work', res.Result)
-            this.priority = res.Result;
+            if (res.Status) {
+              this.priority = res.Result;
+            } else {
+              this.toastr.error('Error Getting Priority List')
+            }
+          },
+          error: (err) => {
+            this.toastr.error('Error' + err)
           }
         })
     }
@@ -209,13 +225,15 @@ export class WorkCreateComponent implements OnInit {
     console.log(payload)
     this.AdminWork.CreateWork(this.token, payload).subscribe({
       next: (res) => {
-        console.log(res)
-        alert("Work Created Successfully")
-        location.reload()
+        if (res.Status) {
+          this.toastr.success('Work Created Successfully')
+          location.reload()
+        } else {
+          this.toastr.error('Error Creating Work. Try Again')
+        }
       },
       error: (err) => {
-        console.log(err)
-        alert("Work NOT Created Successfully, Please try again")
+        this.toastr.error('Error ' + err)
       }
     })
 

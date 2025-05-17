@@ -15,11 +15,12 @@ import { ProjectManageComponent } from './components/project-manage/project-mana
 import { ProjectDocumentsComponent } from './components/project-documents/project-documents.component';
 import { WorkCreateComponent } from './components/work-create/work-create.component';
 import { WorkManageComponent } from './components/work-manage/work-manage.component';
-import { WorkDocumentsComponent } from './components/work-documents/work-documents.component';
+import { WorkDocumentsComponentOnInit } from './components/work-documents/work-documents.component';
 import { SupervisorComponent } from './components/supervisor/supervisor/supervisor.component';
 import { SupervisordashboardComponent } from './components/supervisor/supervisordashboard/supervisordashboard.component';
 import { AdminRequirementsComponent } from './components/admin-requirements/admin-requirements.component';
 import { AdminColorComponent } from './components/admin-color/admin-color.component';
+import { WorkRequestComponent } from './components/work-request/work-request.component';
 
 export const routes: Routes = [
   {
@@ -98,7 +99,7 @@ export const routes: Routes = [
       },
       {
         path: 'work-documents',
-        component: WorkDocumentsComponent,
+        component: WorkDocumentsComponentOnInit,
         title: 'Work Manage',
         pathMatch: 'full',
       },
@@ -117,6 +118,10 @@ export const routes: Routes = [
         path: 'color',
         component: AdminColorComponent,
         title: 'Color',
+      }, {
+        path: 'request',
+        component: WorkRequestComponent,
+        title: 'Work Request',
       },
     ],
   },

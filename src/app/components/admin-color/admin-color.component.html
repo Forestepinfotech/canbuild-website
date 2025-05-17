@@ -39,46 +39,54 @@
                         *ngIf="!ColorList || ColorList.length<0">
                         Nothing to show
                     </div>
-                    <div class="table-responsive"
-                        *ngIf="ColorList && ColorList.length >0">
+                    <div class="scroll-container">
+                        <div class="table-responsive">
+                            <div class="table-responsive"
+                                *ngIf="ColorList && ColorList.length >0">
 
-                        <table
-                            class="table table-bordered table-striped table-hover dataTable js-exportable">
-                            <thead>
-                                <tr>
-                                    <th>Color</th>
-                                    <th>Detail</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
+                                <table
+                                    class="table table-bordered table-striped table-hover dataTable js-exportable">
+                                    <thead>
+                                        <tr>
+                                            <th>Color</th>
+                                            <th>Detail</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
 
-                            <tbody>
-                                <tr *ngFor="let i of ColorList">
+                                    <tbody>
+                                        <tr *ngFor="let i of ColorList">
 
-                                    <td
-                                        [style.backgroundColor]="i.Color_Hex">{{i.ColorName}}</td>
-                                    <td>
-                                        {{i.ColorDetail}}
-                                    </td>
-                                    <td>
+                                            <td
+                                                [style.backgroundColor]="i.Color_Hex">{{i.ColorName}}</td>
+                                            <td>
+                                                {{i.ColorDetail}}
+                                            </td>
+                                            <td>
 
-                                        <button class="btn btn-info btn-round"
-                                            (click)="editColorClick(i)">
-                                            <i class="zmdi zmdi-more"></i> Edit
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
-                                            (click)="deleteColor(i)">
-                                            <i class="zmdi zmdi-delete"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                                <button
+                                                    class="btn btn-info btn-round"
+                                                    (click)="editColorClick(i)">
+                                                    <i
+                                                        class="zmdi zmdi-more"></i>
+                                                    Edit
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                                    (click)="deleteColor(i)">
+                                                    <i
+                                                        class="zmdi zmdi-delete"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

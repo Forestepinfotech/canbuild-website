@@ -1,27 +1,34 @@
 import { AdminSpecifications } from './../../Services/admin/specification';
 import { AdminWork } from './../../Services/admin/work';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { WorkModel } from '../../Model/Work.Model'; // Ensure WorkModel is a class or interface
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkEditComponent } from "../work-edit/work-edit.component";
-import { UnaryOperator } from '@angular/compiler';
+
+import { WorkrMultiFilterPipe } from './workfilter.pipe';
+import { WorkDocumentsComponentOnInit } from "../work-documents/work-documents.component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-work-manage',
-  imports: [CommonModule, FormsModule, WorkEditComponent],
+  imports: [CommonModule, FormsModule, WorkEditComponent, WorkrMultiFilterPipe, WorkDocumentsComponentOnInit],
   templateUrl: './work-manage.component.html',
   styleUrl: './work-manage.component.css'
 })
 export class WorkManageComponent implements OnInit {
   selectedWork: any;
-  cancelEdit() {
-    throw new Error('Method not implemented.');
-  }
-  saveJob($event: Event) {
-    throw new Error('Method not implemented.');
-  }
-  constructor(private AdminWork: AdminWork, private AdminSpecifications: AdminSpecifications) { }
+  workSearch: string = '';
+  jobSearch: string = '';
+  docs: boolean = false;
+
+
+
+  constructor(private AdminWork: AdminWork, private AdminSpecifications: AdminSpecifications, private toastr: ToastrService) { }
+
+
+
+
   selectedJob: any;
   jobList: any;
   editing: boolean = false;
@@ -35,6 +42,11 @@ export class WorkManageComponent implements OnInit {
 
   selectedSpecific: any;
   specificList: any;
+  @ViewChild('scrollTop') scrollTopRef!: ElementRef;
+  @ViewChild('scrollBottom') scrollBottomRef!: ElementRef;
+
+
+
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       this.workList = 'changing'
@@ -48,21 +60,28 @@ export class WorkManageComponent implements OnInit {
       this.AdminWork.GetWork(token, this.companyId, -1, -1, -1,)
         .subscribe({
           next: (res) => {
-            this.workList = res.Result
+            if (res.Status) {
+              this.workList = res.Result
+            } else {
+              this.toastr.error('Error Getting Work, try again')
+            }
           },
           error: (err) => {
-            console.log(err)
+            this.toastr.error('Error ' + err)
           }
         })
 
       this.AdminSpecifications.GetSpecification(token, '-1', -1, -1)
         .subscribe({
           next: (value) => {
-            console.log(value);
-            this.specificList = value.Result;
+            if (value.Status) {
+              this.specificList = value.Result;
+            } else {
+              this.toastr.error('Error Getting Specifications, try again')
+            }
           },
           error: (res) => {
-            console.log(res)
+            this.toastr.error('Error ' + res)
           }
 
         })
@@ -78,61 +97,108 @@ export class WorkManageComponent implements OnInit {
     const token = localStorage.getItem('Token') || '';
     this.AdminWork.UpdateWorkStatus(token, work.WorkID, work.isActive).subscribe({
       next: (response) => {
-        console.log('User updated successfully:', response);
-
-        alert(response.Message)
+        if (response.Status) {
+          this.toastr.success('User Updated Successfully')
+        } else {
+          this.toastr.error('Error updating the work, Please try again')
+        }
 
       },
       error: (err) => {
-        console.error('Error updating user:', err);
+        this.toastr.error('Error ' + err)
       }
     });
 
   }
   onStatusToggle(specific: any, work: any, selected: boolean): void {
-    console.log(specific)
+    if (selected) {
+      console.log(specific, work, selected)
+      const payload = {
+        JobID: work.JobID,
+        JobDetail: work.JobDetail,
+        SpecificationID: specific.SpecificationID,
+        Specification: specific.Specification,
+        isDone: 1,
+        Done: "No",
+        CompanyID: Number(this.companyId),
+        UserID: Number(this.userId),
+        isActive: 1,
+        WorkID: work.WorkID,
+        WorkSubject: work.WorkSubject
+      };
+      this.AdminSpecifications.UpdateSpecification(this.token, payload).subscribe({
+        next: (res) => {
+          if (res.Status) {
+            this.toastr.success('Updated the user status ')
+          }
+          else {
+            this.toastr.error('Error updating the work, Please try again')
+          }
+        },
+        error: (err) => {
+          this.toastr.error('Error ' + err)
+        }
+      });
+    }
   }
 
   onStatusSelect(id: number, work: any) {
     this.AdminWork.UpdateWorkCompleteStatus(this.token, this.userId, id, work.WorkID).subscribe({
       next: (response) => {
-        console.log('User updated successfully:', response);
-        const selectedStatus = this.status.find((s: any) => s.statusId === id);
-        if (selectedStatus) {
-          work.StatusID = selectedStatus.statusId;
-          work.StatusName = selectedStatus.statusName;
+        if (response.Status) {
+          this.toastr.success('Successfully updated the user')
+          const selectedStatus = this.status.find((s: any) => s.statusId === id);
+          if (selectedStatus) {
+            work.StatusID = selectedStatus.statusId;
+            work.StatusName = selectedStatus.statusName;
+          }
+        } else {
+          this.toastr.error('Error updating the work, Please try again')
         }
-
-        alert(response.Message)
       },
       error: (err) => {
-        console.error('Error updating user:', err);
+        this.toastr.error('Error ' + err)
       }
     });
   }
-  onEdit(work: any) {
-    this.selectedWork = { ...work };
+  doc(user: any) {
+    this.selectedWork = user;
+    this.editing = false; // <-- add this
+    this.docs = true;
+  }
+
+  onEdit(job: any) {
+    this.selectedWork = job;
+    this.docs = false; // <-- add this
     this.editing = true;
+    console.log("here")
+  }
+  onCancel() {
+    this.editing = false;
+    this.docs = false;
   }
   onDelete(work: any) {
+    if (!confirm(`Are you sure you want to delete project: ${work.WorkStatus}?`)) {
+      return;
+    }
     this.AdminWork.DeleteWork(this.token, work)
       .subscribe({
         next: (res) => {
-          console.log('deeted')
-          alert('Work Deleted')
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Work Deleted')
+            location.reload()
+          } else {
+            this.toastr.error('Error Deleting the work, Please try again')
+          }
         },
-        error(err) {
-          console.log(err)
+        error: (err) => {
+          this.toastr.error('Error ' + err)
         },
       })
   }
 
-  onCancel() {
-    this.editing = false;
-  }
+
   onSave(updatedWork: any) {
-    console.log(updatedWork)
     const payload: WorkModel = {
       WorkID: updatedWork.WorkID,
       WorkSubject: updatedWork.WorkSubject,
@@ -179,11 +245,15 @@ export class WorkManageComponent implements OnInit {
     this.AdminWork.UpdateWork(this.token, payload)
       .subscribe({
         next: (res) => {
-          this.editing = false
-          console.log(res)
+          if (res.Status) {
+            this.editing = false
+            this.toastr.error('Work Saved Successfully')
+          } else {
+            this.toastr.error('Error saving the work, Please try again')
+          }
         },
         error: (err) => {
-          console.log(err)
+          this.toastr.error('Error ') + err
         }
       })
   }

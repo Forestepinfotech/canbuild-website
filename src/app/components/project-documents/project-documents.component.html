@@ -1,1 +1,215 @@
-<p>project-documents works!</p>
+
+
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Job List</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Job
+                            Document</a></li>
+
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="header">
+            <h2><strong>Add New Document</strong></h2>
+        </div>
+        <div class="body">
+            <form (ngSubmit)="onSubmitNewDoc()" #uploadForm="ngForm"
+                enctype="multipart/form-data">
+                <div class="row clearfix">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Upload Document</label>
+                            <input type="file" class="form-control"
+                                (change)="onFileSelected($event)" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Document Type</label>
+                            <select class="form-control"
+                                [(ngModel)]="newDoc.DocumentTypeID"
+                                name="docType" required>
+                                <option *ngFor="let type of typeList"
+                                    [value]="type.id">{{ type.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <label>Permission To:</label>
+                <div class="row">
+                    <div class="col-sm-3">
+
+                        <input type="checkbox" [(ngModel)]="newDoc.Manager"
+                            name="manager"> Manager
+                        <label class="checkbox"></label>
+                    </div>
+                    <div class="col-sm-3">
+
+                        <input type="checkbox" [(ngModel)]="newDoc.Vendor"
+                            name="vendor"> Vendor
+                        <label class="checkbox"></label>
+                    </div>
+                    <div class="col-sm-3">
+
+                        <input type="checkbox" [(ngModel)]="newDoc.Customer"
+                            name="customer"> Customer
+                        <label class="checkbox"></label>
+                    </div>
+                    <div class="col-sm-3">
+
+                        <input type="checkbox" [(ngModel)]="newDoc.Employee"
+                            name="employee"> Employee
+                        <label class="checkbox"></label>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-success" type="submit"
+                        [disabled]="!uploadForm.form.valid">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>List</strong> </h2>
+
+                    </div>
+                </div>
+                <div class="body">
+
+                    <select class="form-control show-tick"
+                        name="userType"
+                        [(ngModel)]="selectedType"
+                        (change)="onTypeChange()">
+
+                        <option
+                            *ngFor="let i of typeList"
+                            value="{{i.id}}">{{i.name}}</option>
+
+                    </select>
+                </div>
+            </div>
+            <div
+                *ngIf="!docs">
+                Nothing to show
+            </div>
+            <div class="table-responsive"
+                *ngIf="docs!=='changing' && docs">
+
+                <table
+                    class="table table-bordered table-striped table-hover dataTable js-exportable">
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Type</th>
+                            <th>Manager</th>
+                            <th>Vendor</th>
+                            <th>Customer</th>
+                            <th>Employee</th>
+                            <th>Download</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let i of docs">
+                            <td>{{i.JobDocument}}</td>
+                            <td>{{i.DocumentType}}</td>
+                            <td>
+                                <div class="checkbox">
+                                    <input
+                                        id="checkbox 503 {{i.JobDocument}}"
+                                        type="checkbox"
+                                        [checked]="i.Manager === 1"
+                                        (change)="toggleManagerActive(i, $event)">
+                                    <label
+                                        for="checkbox 503 {{i.JobDocument}}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <input
+                                        id="checkbox 504 {{i.JobDocument}}"
+                                        type="checkbox"
+                                        [checked]="i.Vendor === 1"
+                                        (change)="toggleVendorActive(i, $event)">
+                                    <label
+                                        for="checkbox 504 {{i.JobDocument}}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <input
+                                        id="checkbox 505 {{i.JobDocument}}"
+                                        type="checkbox"
+                                        [checked]="i.Customer === 1"
+                                        (change)="toggleCustomerActive(i, $event)">
+                                    <label
+                                        for="checkbox 505 {{i.JobDocument}}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <input
+                                        id="checkbox 506 {{i.JobDocument}}"
+                                        type="checkbox"
+                                        [checked]="i.Employee === 1"
+                                        (change)="toggleEmployeeActive(i, $event)">
+                                    <label
+                                        for="checkbox 506 {{i.JobDocument}}"></label>
+                                </div>
+                            </td>
+
+                            <td>
+                                <button
+                                    class="btn btn-primary btn-round"
+                                    (click)="downloadDoc(i)">
+                                    <i class="zmdi zmdi-copy"></i>
+                                    Download
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                    (click)="deleteDoc(i)">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="row clearfix ml-4">
+                <div class="col-sm-12">
+                    <button
+                        class="btn btn-danger btn-lg"
+                        (click)="onCancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

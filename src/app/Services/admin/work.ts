@@ -101,17 +101,66 @@ export class AdminWork {
         const headers = new HttpHeaders({
             Token: token, // Pass the token in the Authorization header
         });
-
-
         const params = new HttpParams()
-
-
         return this.httpClient.post<any>(this.apiUrl + 'Work/WorkDelete', workDetail, {
             headers,
             params,
         });
+    }
 
+    GetWorkDoc(token: string, documentId: string, workId: number, userId: number, jobId: number, jobName: string, pagenumber: number, pageSize: number)
+        : Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+        const params = new HttpParams()
+            //wrong splling of company
+            .set('UserID', userId.toString())
+            .set('JobID', jobId.toString())
+            .set('WorkID', workId.toString())
+            .set('DocumentID', documentId.toString())
+            .set('jobname', jobName.toString())
+            .set('PageNumber', pagenumber.toString())
+            .set('PageSize', pageSize.toString())
+        return this.httpClient.get<any>(this.apiUrl + 'Documents/WorkDocReturn', {
+            headers,
+            params
+        });
+    }
 
+    CreateWorkDoc(token: string, workDetal: {
+        "JobID": number,
+        "JobName": string,
+        "WorkID": number,
+        "WorkDetail": string,
+        "DocumentTypeID": number,
+        "DocumentType": string,
+        "DocumentName": string,
+        "DocumentDetail": string,
+        "isActive": number,
+        "isDeleted": number,
+        "UserID": number,
+        "UserName": string
+    }): Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+
+        return this.httpClient.post<any>(this.apiUrl + 'Documents/WorkDocCreate', workDetal, {
+            headers
+        });
+    }
+
+    UpdateWorkDoc(token: string, workDetal: {
+        "DocumentID": string,
+        "isActive": number,
+    }): Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+        return this.httpClient.post<any>(this.apiUrl + 'Documents/WorkDocRejected', workDetal, {
+            headers
+        });
     }
 
 }

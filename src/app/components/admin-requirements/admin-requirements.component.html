@@ -33,10 +33,6 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
-                        <h2><strong>Create</strong> </h2>
-
-                    </div>
 
                     <div class="form-group row clearfix">
                         <div class="col-sm-6">
@@ -55,53 +51,56 @@
             </div></div>
         <div class="row clearfix">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="header">
-                        <h2><strong>List</strong> </h2>
 
-                    </div>
-                </div>
                 <div class="body">
 
                     <div
                         *ngIf="!SpecificList || SpecificList.length<0">
                         Nothing to show
                     </div>
-                    <div class="table-responsive"
-                        *ngIf="SpecificList && SpecificList.length >0">
+                    <div class="scroll-container">
+                        <div class="table-responsive">
+                            <div class="table-responsive"
+                                *ngIf="SpecificList && SpecificList.length >0">
 
-                        <table
-                            class="table table-bordered table-striped table-hover dataTable js-exportable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
+                                <table
+                                    class="table table-bordered table-striped table-hover dataTable js-exportable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
 
-                            <tbody>
-                                <tr *ngFor="let i of SpecificList">
+                                    <tbody>
+                                        <tr *ngFor="let i of SpecificList">
 
-                                    <td>{{i.Specification}}</td>
+                                            <td>{{i.Specification}}</td>
 
-                                    <td>
-                                        <button class="btn btn-info btn-round"
-                                            (click)="editSpecific(i)">
-                                            <i class="zmdi zmdi-more"></i> Edit
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-danger btn-icon btn-icon-mini btn-round"
-                                            (click)="deleteSpecific(i.SpecificationID)">
-                                            <i class="zmdi zmdi-delete"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                            <td>
+                                                <button
+                                                    class="btn btn-info btn-round"
+                                                    (click)="editSpecific(i)">
+                                                    <i
+                                                        class="zmdi zmdi-more"></i>
+                                                    Edit
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    class="btn btn-danger btn-icon btn-icon-mini btn-round"
+                                                    (click)="deleteSpecific(i.SpecificationID)">
+                                                    <i
+                                                        class="zmdi zmdi-delete"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
 
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

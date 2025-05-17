@@ -2,6 +2,7 @@ import { AdminSpecifications } from './../../Services/admin/specification';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-requirements',
@@ -18,7 +19,7 @@ export class AdminRequirementsComponent implements OnInit {
   userId: string = "";
   editSpec: any;
   createSpec: any;
-  constructor(private AdminSpecifications: AdminSpecifications) { }
+  constructor(private AdminSpecifications: AdminSpecifications, private toastr: ToastrService) { }
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -32,31 +33,41 @@ export class AdminRequirementsComponent implements OnInit {
       this.AdminSpecifications.GetSpecification(token, '-1', -1, -1)
         .subscribe({
           next: (value) => {
-            console.log(value);
-            this.SpecificList = value.Result;
+            if (value.Status) {
+              this.SpecificList = value.Result;
+            } else {
+              this.toastr.error('Error Getting the list, Please Try Again Later')
+            }
           },
           error: (res) => {
-            console.log(res)
+            this.toastr.error('Error' + res)
           }
 
         })
     }
   }
   deleteSpecific(id: any) {
+    if (!confirm('Are you sure you want to delete this requirement?')) {
+      return
+    }
     this.AdminSpecifications.DeleteSpecification(this.token, id)
       .subscribe({
         next: (res) => {
-          console.log('deleted')
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Deleted')
+            location.reload()
+          }
+          else {
+            this.toastr.error('Error Getting the list, Please Try Again Later')
+          }
         },
         error: (err) => {
-          alert("ERROR" + err)
+          this.toastr.error("ERROR" + err)
         }
 
       })
   }
   createNewSpec() {
-    console.log(this.createSpec)
     this.AdminSpecifications.CreateSpecification(this.token, {
       Specification: this.createSpec,
       JobDetail: '',
@@ -71,12 +82,16 @@ export class AdminRequirementsComponent implements OnInit {
     })
       .subscribe({
         next: (res) => {
-          console.log(res);
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Requirement Created')
+            location.reload()
+          } else {
+            this.toastr.error('Error creating the requirement, Please Try Again Later')
+          }
         },
         error: (err) => {
-          console.log(err),
-            alert("ERROR" + err)
+
+          this.toastr.error("ERROR" + err)
         }
       })
   }
@@ -89,17 +104,21 @@ export class AdminRequirementsComponent implements OnInit {
     this.editing = false;
   }
   saveEdit(newSpecific: any) {
-    console.log(newSpecific)
+
     this.AdminSpecifications.UpdateSpecification(this.token, newSpecific)
       .subscribe({
         next: (res) => {
-          console.log('updated')
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Requirement Updated')
+            location.reload()
+          } else {
+            this.toastr.error('Error updating the requirement, Please Try Again Later')
+          }
         },
         error: (err) => {
-          alert("ERROR" + err)
-        }
 
+          this.toastr.error("ERROR" + err)
+        }
       })
   }
 }

@@ -108,4 +108,21 @@ export class AdminProject {
 
     }
 
+
+    GetJobDocs(token: string, documentId: number, jobId: number, typeId: number, isActive: number)
+        : Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+        const params = new HttpParams()
+            //wrong splling of company
+            .set('documentid', documentId.toString())
+            .set('jobid', jobId.toString())
+            .set('typeid', typeId.toString())
+            .set('isactive', isActive.toString())
+        return this.httpClient.get<any>(this.apiUrl + 'Job/DocReturn', {
+            headers,
+            params
+        });
+    }
 }

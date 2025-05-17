@@ -1,17 +1,20 @@
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { AdminUser } from '../../Services/admin/User';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserEditComponent } from '../user-edit/user-edit.component';
+import { UserNameFilterPipe } from './userfilter.pipe';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-manage',
-  imports: [CommonModule, FormsModule, UserEditComponent],
+  imports: [CommonModule, FormsModule, UserEditComponent, UserNameFilterPipe],
   templateUrl: './user-manage.component.html',
   styleUrl: './user-manage.component.css'
 })
 export class UserManageComponent implements OnInit {
-
+  userSearch: string = ''
   userList: any;
   userTypes: { UserTypeID: number; UserType: string }[] = [];
   selectedUserTypeID!: number;
@@ -22,25 +25,26 @@ export class UserManageComponent implements OnInit {
   userId: string = "";
   constructor(
     private AdminUser: AdminUser,
+    private toastr: ToastrService
   ) { }
   ngOnInit() {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
+      console.log('ToastrService', this.toastr);
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';
       this.AdminUser.GetUserTypes(token, '-1')
-        .subscribe({
-          next: (data) => {
-            console.log('Dashboard data:', data);
-            this.userTypes = data.Result;
+        .subscribe((response) => {
+          if (response.Status) {
+            this.userTypes = response.Result;
             this.selectedUserTypeID = this.userTypes[1].UserTypeID;
             console.log(this.selectedUserTypeID)
             this.onUserTypeChange(this.selectedUserTypeID);
-          },
-          error: (err) => {
-            console.error('Error fetching dashboard data:', err);
           }
+          else {
+            this.toastr.error('Error Getting User Types, Try Again')
+          }
+
         });
       this.token = token;
       this.companyId = companyID;
@@ -69,8 +73,13 @@ export class UserManageComponent implements OnInit {
         1,
         100
       ).subscribe(response => {
-        this.userList = response.Result;
-        console.log("Updated", this.userList)
+        if (response.Status) {
+          this.userList = response.Result;
+        } else {
+          this.toastr.error('Error Getting Users, Try Again')
+        }
+
+
       });
     }
   }
@@ -111,15 +120,14 @@ export class UserManageComponent implements OnInit {
       UserImage: updatedUser.UserImage,
       EmailID: updatedUser.Email,
       UserTypeID: updatedUser.UserTypeID,
-    }).subscribe({
-      next: (response) => {
-        console.log('User updated successfully:', response);
+    }).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success('User Updated Successfully')
         this.onUserTypeChange(updatedUser.UserTypeID);
-
-      },
-      error: (err) => {
-        console.error('Error updating user:', err);
+      } else {
+        this.toastr.error('Error Updating User, Try again')
       }
+
     });
   }
 
@@ -131,15 +139,13 @@ export class UserManageComponent implements OnInit {
     const checkbox = event.target as HTMLInputElement;
     user.isActive = checkbox.checked ? 1 : 0;
     const token = localStorage.getItem('Token') || '';
-    this.AdminUser.UpdateUserStatus(token, user.UserID, user.isActive).subscribe({
-      next: (response) => {
-        console.log('User updated successfully:', response);
-        alert(response.Message)
-
-      },
-      error: (err) => {
-        console.error('Error updating user:', err);
+    this.AdminUser.UpdateUserStatus(token, user.UserID, user.isActive).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success('User Updated Successfully')
+      } else {
+        this.toastr.error('Error Updating User, Try again')
       }
+
     });
 
   }
@@ -147,15 +153,16 @@ export class UserManageComponent implements OnInit {
     alert("Error! Doc cant be shown at this moment.")
   }
   onDelete(user: any) {
-    this.AdminUser.Deleteuser(this.token, user.UserID, this.userId).subscribe({
-      next: (res) => {
-        console.log('User Deleted');
-        alert('User deleted Succesfully');
+    if (!confirm(`Are you sure you want to delete user: ${user.UserName}?`)) {
+      return;
+    }
+    this.AdminUser.Deleteuser(this.token, user.UserID, this.userId).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success("Deleted The User")
         this.onUserTypeChange(user.UserTypeID);
-      },
-      error: (err) => {
-        console.log(err);
-        alert('User Was NOT deleted, Please Try Again')
+      }
+      else {
+        this.toastr.error('Error Deeleting User, Try again')
       }
     })
   }

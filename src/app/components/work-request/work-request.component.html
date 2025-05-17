@@ -1,0 +1,152 @@
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Specifications</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+
+                <div class="body">
+
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"
+                                [class.disabled]="currentPage === 1">
+                                <button class="page-link"
+                                    (click)="prevPage()"
+                                    aria-label="Previous">&laquo;
+                                    Prev</button>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">Page {{
+                                    currentPage }}</span>
+                            </li>
+                            <li class="page-item">
+                                <button class="page-link"
+                                    (click)="nextPage()"
+                                    aria-label="Next">Next
+                                    &raquo;</button>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="scroll-container">
+                        <div class="table-responsive">
+                            <div *ngIf="!request || request.length <= 0"
+                                class="d-flex justify-content-center w-100">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="table-responsive "
+                                *ngIf="request && request.length > 0">
+
+                                <div class="container mt-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3 "
+                                            *ngFor="let request of request">
+                                            <div
+                                                class="card bg-white text-dark">
+                                                <div
+                                                    class="card-header text-white bg-secondary">
+                                                    <strong>{{
+                                                        request.WorkSubject
+                                                        }}</strong>
+                                                    <span
+                                                        class="badge float-right"
+                                                        [ngClass]="{
+                          'badge-success': request.isApproval === 1,
+                          'badge-warning': request.isApproval === 0
+                        }">
+                                                        {{ request.isApproval
+                                                        === 1 ?
+                                                        'Approved' : 'Pending'
+                                                        }}
+                                                    </span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p><strong>Request
+                                                            ID:</strong> {{
+                                                        request.RequestID }}</p>
+                                                    <p><strong>User:</strong> {{
+                                                        request.UserName }}</p>
+                                                    <p><strong>Start
+                                                            Date:</strong> {{
+                                                        request.StartDate |
+                                                        date:'mediumDate' }}</p>
+                                                    <p><strong>End
+                                                            Date:</strong> {{
+                                                        request.EndDate |
+                                                        date:'mediumDate' }}</p>
+                                                    <p><strong>Status:</strong>
+                                                        <span
+                                                            [ngClass]="{
+                            'text-success': request.isActive === 1,
+                            'text-danger': request.isActive === 0,
+                            'text-secondary': request.isActive === -1
+                          }">
+                                                            {{ request.isActive
+                                                            === 1 ?
+                                                            'Active' :
+                                                            (request.isActive
+                                                            === 0 ? 'Inactive' :
+                                                            'Pending') }}
+                                                        </span>
+                                                    </p>
+                                                    <p><strong>Note:</strong> {{
+                                                        request.RequestNote ||
+                                                        'No notes' }}</p>
+                                                    <p><small
+                                                            class="text-muted">Created
+                                                            on: {{
+                                                            request.CreatedOn |
+                                                            date:'short'
+                                                            }}</small></p>
+
+                                                    <!-- Approve / Reject buttons -->
+                                                    <div class="mt-3">
+                                                        <button
+                                                            class="btn btn-success btn-sm"
+                                                            [disabled]="request.isApproval === 1"
+                                                            (click)="approveRequest(request)">
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-danger btn-sm ml-2"
+                                                            [disabled]="request.isApproval === 0"
+                                                            (click)="rejectRequest(request)">
+                                                            Reject
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div></div>
+                        </div>
+
+                    </div>
+                    <!-- Pagination -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -56,7 +56,7 @@ export class AdminSpecifications {
 
 
         return this.httpClient.post<any>(
-            this.apiUrl + 'Specification/SpecificationUpdate',
+            this.apiUrl + 'Specification/SpecificationJobUpdate',
             payload,
             { headers }
         );

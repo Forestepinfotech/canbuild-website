@@ -2,6 +2,7 @@ import { AdminColor } from './../../Services/admin/color';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-color',
@@ -17,7 +18,7 @@ export class AdminColorComponent implements OnInit {
   companyId: string = "";
   userId: string = "";
   editColor: any;
-  constructor(private AdminColor: AdminColor) { }
+  constructor(private AdminColor: AdminColor, private toastr: ToastrService) { }
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -31,17 +32,19 @@ export class AdminColorComponent implements OnInit {
       this.AdminColor.GetColor(companyID, token, '-1')
         .subscribe({
           next: (value) => {
-            console.log(value);
             this.ColorList = value.Result;
           },
           error: (res) => {
-            console.log(res)
+
           }
 
         })
     }
   }
   deleteColor(newColor: any) {
+    if (!confirm("Are you sure you want to delete this color?")) {
+      return
+    }
     this.AdminColor.CreateColor(this.token, {
       ColorID: newColor.ColorID,
       ColorName: newColor.ColorNameng,
@@ -52,13 +55,17 @@ export class AdminColorComponent implements OnInit {
     })
       .subscribe({
         next: (res) => {
-          console.log('created')
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Color Deleted')
+            location.reload()
+          } else {
+            this.toastr.error('Error deleting the color, Please Try Again Later')
+          }
         },
         error: (err) => {
-          alert("ERROR" + err)
-        }
 
+          this.toastr.error("ERROR" + err)
+        }
       })
   }
 
@@ -84,13 +91,17 @@ export class AdminColorComponent implements OnInit {
     })
       .subscribe({
         next: (res) => {
-          console.log('created')
-          location.reload()
+          if (res.Status) {
+            this.toastr.success('Color Updated')
+            location.reload()
+          } else {
+            this.toastr.error('Error updating the color, Please Try Again Later')
+          }
         },
         error: (err) => {
-          alert("ERROR" + err)
-        }
 
+          this.toastr.error("ERROR" + err)
+        }
       })
   }
 }

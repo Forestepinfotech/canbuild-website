@@ -160,7 +160,26 @@ export class AdminUser {
 
 
     }
+    GetUsersById(
+        token: string,
+        id: string,
 
+    ): Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+        const url = `${this.apiUrl}User/ReturnByID/${id}`;
+
+        const params = new HttpParams()
+            //wrong splling of company
+            .set('id', id.toString())
+        return this.httpClient.get<any>(url, {
+            headers,
+            params,
+        });
+
+
+    }
     Deleteuser(token: string, userid: string, operrand: string): Observable<any> {
         const headers = new HttpHeaders({
             Token: token, // Pass the token in the Authorization header

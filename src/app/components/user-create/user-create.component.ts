@@ -3,7 +3,8 @@ import { AdminDashboard } from './../../Services/admin/dashboard';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { UserManageComponent } from '../user-manage/user-manage.component';
+
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 
@@ -33,9 +34,10 @@ export class UserCreateComponent implements OnInit {
   selectedFile: File | null = null;
   formError: string = '';
   constructor(
-    private AdminUser: AdminUser, private AdminDashboard: AdminDashboard) { }
+    private AdminUser: AdminUser, private AdminDashboard: AdminDashboard, private toastr: ToastrService) { }
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+
 
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
@@ -46,26 +48,26 @@ export class UserCreateComponent implements OnInit {
 
       if (companyID != null || token != null) {
         this.AdminUser.GetUserTypes(token, '-1')
-          .subscribe({
-            next: (data) => {
-              console.log('Dashboard data:', data);
-              this.userTypes = data.Result;
-              console.log(this.userTypes)
-            },
-            error: (err) => {
-              console.error('Error fetching dashboard data:', err);
+          .subscribe((response) => {
+            if (response.Status) {
+              this.userTypes = response.Result;
+
+            } else {
+              this.toastr.error('Error Loading User Types, Try Again')
             }
-          });
+
+          }
+          )
 
         this.AdminDashboard.GetColorNotes(companyID, token, '-1')
-          .subscribe({
-            next: (data) => {
-              console.log(data)
-              this.employeeTypes = data.Result;
-            },
-            error: (err) => {
-              console.log(Error, err)
+          .subscribe((response) => {
+            if (response.Status) {
+              this.employeeTypes = response.Result;
+
+            } else {
+              this.toastr.error('Error Loading Color , Try Again')
             }
+
           })
       }
 
@@ -97,8 +99,7 @@ export class UserCreateComponent implements OnInit {
           if (response.Status) {
             console.log(response.Message)
           } else {
-            alert("File was not uploaded successfully, pleae try again later")
-            console.log(response.Message);
+            this.toastr.error('Error  ', 'Uploading the File Try Again')
           }
 
         });
@@ -177,12 +178,6 @@ export class UserCreateComponent implements OnInit {
       return false;
     }
 
-    // Add phone validation (simple check for now)
-    // const phoneRegex = /^\d{10,15}$/;
-    // if (!phoneRegex.test(this.phone.replace(/[^0-9]/g, ''))) {
-    //   this.formError = 'Please enter a valid phone number';
-    //   return false;
-    // }
 
     // Add postal code validation for Canadian format (A1A 1A1)
     const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
@@ -197,22 +192,15 @@ export class UserCreateComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    // // You can handle form submission logic here
-    // if (userForm.invalid) {
-    //   return;
-    // }
     if (!this.validateForm()) {
-      return; // validateForm sets the error message
+      return;
     }
-    // const fileName = this.selectedFile!.name;
-    // const fileExtension = fileName.split('.').pop();
-    // const userImage = 'Web' + this.firstName + '.' + fileExtension;
-    // console.log(userImage);
+
     this.AdminUser.CreateUser(this.token, {
       UserName: this.firstName,
       UserFullName: this.lastName,
       UserType: this.userTypes.find((i) => i.UserTypeID === this.selectedUserTypeID)?.UserType || '',
-      HashPassKey: "",
+      HashPassKey: "1234",
       EmailID: this.email,
       UserImage: "dummys",
       ContactNo: this.phone,
@@ -238,16 +226,30 @@ export class UserCreateComponent implements OnInit {
       State: this.province,
       Country: "CA"
 
-    }).subscribe({
-      next: (res: any) => {
-        console.log('User created:', res)
-        alert("User Created!")
-        location.reload()
-        // this.uploadFiles(userImage)
-
-      },
-      error: (err: any) => alert('Error:' + err)
-    });
+    }).subscribe((response) => {
+      if (response.Status) {
+        this.toastr.success('User created successfully')
+        this.resetForm()
+      }
+      else {
+        this.toastr.error('Error ,user NOT created successfully')
+      }
+    })
+  }
+  resetForm() {
+    this.submitted = false;
+    this.firstName = '';
+    this.lastName = '';
+    this.email = '';
+    this.phone = '';
+    this.selectedUserTypeID = 0;
+    this.selectedRole = '';
+    this.companyId = '';
+    this.address = '';
+    this.city = '';
+    this.postalCode = '';
+    this.province = '';
+    // If you're using a reactive form, also call: this.form.reset();
   }
 
 
