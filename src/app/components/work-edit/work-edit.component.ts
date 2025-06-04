@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
+import { AdminWork } from './../../Services/admin/work';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-work-edit',
@@ -13,7 +15,8 @@ import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr
   standalone: true,
 })
 export class WorkEditComponent implements OnInit {
-  constructor(private AdminDashboard: AdminDashboard) { }
+  constructor(private AdminDashboard: AdminDashboard, private AdminWork: AdminWork, private toastr: ToastrService) { }
+
   rangeValue: { from: Date; to: Date } = { from: new Date(), to: new Date() };
 
   @Input() work: any = {};
@@ -42,6 +45,20 @@ export class WorkEditComponent implements OnInit {
           }
 
         });
+      this.AdminWork.GetPriorityWork(token, -1)
+        .subscribe({
+          next: (res) => {
+            if (res.Status) {
+              this.priority = res.Result;
+
+            } else {
+              this.toastr.error('Error ', res.Message)
+            }
+          },
+          error: (err) => {
+            this.toastr.error('Error' + err)
+          }
+        })
     }
   }
   onSave() {
@@ -57,7 +74,11 @@ export class WorkEditComponent implements OnInit {
     this.work.EndDate = new Date(this.rangeValue.to).toLocaleDateString();
     this.work.StartTime = this.rangeValue.from.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     this.work.EndTime = this.rangeValue.to.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
+    const selectedPriorirtyDetail = this.priority.find(
+      (i: any) => i.PriorityID == this.work.PriorityID
+    );
+    this.work.PriorityName = selectedPriorirtyDetail.PriorityName
+    this.work.PriorityLevel = selectedPriorirtyDetail.PriorityLevel
     console.log(this.work.StartDate)
     this.save.emit(this.work);
   }

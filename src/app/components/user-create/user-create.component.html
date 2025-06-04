@@ -61,7 +61,7 @@
                                             Role --</option>
                                         <ng-container
                                             *ngFor="let employee of employeeTypes">
-                                            <option value="{{employee.ColorId}}"
+                                            <option value="{{employee.ColorID}}"
                                                 *ngIf="employee.ColorDetail">
                                                 {{employee.ColorDetail}}
                                             </option>
@@ -167,6 +167,7 @@
                                         [(ngModel)]="postalCode"
                                         required
                                         name="postalCode" />
+                                    <p class="fst-italic">optional</p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -192,8 +193,18 @@
                                         name="province" />
                                 </div>
                             </div>
-
                         </div>
+                        <!-- <div class="row clearfix">
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="fileUpload">Upload
+                                        Document</label>
+                                    <input type="file" id="fileUpload"
+                                        class="form-control"
+                                        (change)="onFileSelected($event)">
+                                </div>
+                            </div>
+                        </div> -->
                         <div
                             class="text-danger">
                             {{formError}}

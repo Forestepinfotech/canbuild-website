@@ -1,3 +1,9 @@
 .is-invalid {
     border-color: red;
 }
+
+.fst-italic {
+    font-style: italic;
+    font-weight: 100;
+    color: grey;
+}

@@ -80,10 +80,10 @@ export class ProjectCreateComponent implements OnInit {
       return false;
     }
 
-    if (!this.jobPostalCode || this.jobPostalCode.trim() === '') {
-      this.formError = 'Job postal code is required';
-      return false;
-    }
+    // if (!this.jobPostalCode || this.jobPostalCode.trim() === '') {
+    //   this.formError = 'Job postal code is required';
+    //   return false;
+    // }
 
     if (!this.selectedUserID || this.selectedUserID === 0) {
       this.formError = 'Manager selection is required';
@@ -92,7 +92,7 @@ export class ProjectCreateComponent implements OnInit {
 
     // Add postal code validation for Canadian format (A1A 1A1)
     const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-    if (!postalCodeRegex.test(this.jobPostalCode)) {
+    if (this.jobPostalCode != "" && !postalCodeRegex.test(this.jobPostalCode)) {
       this.formError = 'Please enter a valid Canadian postal code';
       return false;
     }
@@ -149,7 +149,7 @@ export class ProjectCreateComponent implements OnInit {
       WorkingDays: "Mon-Fri",
       JobAddress: this.jobAddress,
       JobCity: this.jobCity,
-      JobPostalCode: this.jobPostalCode,
+      JobPostalCode: this.jobPostalCode || "",
       ProjectStartingDate: new Date(this.rangeValue.from).toISOString(),
       ProjectEndingDate: new Date(this.rangeValue.to).toISOString(),
       CreatedName: selectedUser.UserName + ' ' + selectedUser.UserFullName,

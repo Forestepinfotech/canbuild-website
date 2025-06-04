@@ -23,6 +23,7 @@ export class UserManageComponent implements OnInit {
   token: string = "";
   companyId: string = "";
   userId: string = "";
+  ErrorMessage: any = '';
   constructor(
     private AdminUser: AdminUser,
     private toastr: ToastrService
@@ -38,11 +39,12 @@ export class UserManageComponent implements OnInit {
           if (response.Status) {
             this.userTypes = response.Result;
             this.selectedUserTypeID = this.userTypes[1].UserTypeID;
-            console.log(this.selectedUserTypeID)
+
             this.onUserTypeChange(this.selectedUserTypeID);
           }
           else {
             this.toastr.error('Error ', response.Message)
+
           }
 
         });
@@ -57,7 +59,7 @@ export class UserManageComponent implements OnInit {
 
   }
   onUserTypeChange(userTypeId: number) {
-    console.log('changes')
+
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       this.userList = "changing";
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -77,6 +79,8 @@ export class UserManageComponent implements OnInit {
           this.userList = response.Result;
         } else {
           this.toastr.error('Error ', response.Message)
+          this.ErrorMessage = response.Message
+          this.userList = "error";
         }
 
 
@@ -118,7 +122,7 @@ export class UserManageComponent implements OnInit {
       UserName: updatedUser.UserName,
       UserFullName: updatedUser.UserFullName,
       UserImage: updatedUser.UserImage,
-      EmailID: updatedUser.Email,
+      EmailID: updatedUser.EmailID,
       UserTypeID: updatedUser.UserTypeID,
     }).subscribe((response) => {
       if (response.Status) {

@@ -27,7 +27,7 @@ export class WorkCreateComponent implements OnInit {
   userId: string = ""
   selectedProject: number = 0;
   projects: any;
-  selectedUser: number = 0;
+  selectedUser: number = -1;
   users: any;
   workSubject: any;
   workNote: any;
@@ -70,7 +70,7 @@ export class WorkCreateComponent implements OnInit {
         token,
         '-1',
         -1,
-        504,
+        507,
         1,
         100
       ).subscribe(response => {
@@ -129,10 +129,10 @@ export class WorkCreateComponent implements OnInit {
       return false;
     }
 
-    if (!this.selectedUser || this.selectedUser === 0) {
-      this.formError = 'User selection is required';
-      return false;
-    }
+    // if (!this.selectedUser || this.selectedUser === 0) {
+    //   this.formError = 'User selection is required';
+    //   return false;
+    // }
 
     if (!this.selectedColor || this.selectedColor === 0) {
       this.formError = 'Color selection is required';
@@ -198,10 +198,10 @@ export class WorkCreateComponent implements OnInit {
       PriorityName: selectedPriorirtyDetail.PriorityName,
       PriorityLevel: selectedPriorirtyDetail.PriorityLevel,
 
-      UserID: selectedUserDetail.UserID,
-      UserName: selectedUserDetail.UserName,
-      UserType: selectedUserDetail.UserType,
-      UserTypeID: selectedUserDetail.UserTypeID,
+      UserID: selectedUserDetail?.UserID ?? -1,
+      UserName: selectedUserDetail?.UserName ?? -1,
+      UserType: selectedUserDetail?.UserType ?? -1,
+      UserTypeID: selectedUserDetail?.UserTypeID ?? -1,
 
       CompanyID: Number(this.companyId),
       CompanyName: '',

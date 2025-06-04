@@ -1,1 +1,7 @@
 @import 'flatpickr/dist/flatpickr.css';
+
+.fst-italic {
+    font-style: italic;
+    font-weight: 100;
+    color: grey;
+}

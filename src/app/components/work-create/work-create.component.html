@@ -75,7 +75,7 @@
                                         [(ngModel)]="selectedUser"
                                         name="selectedUser"
                                         *ngIf="users">
-                                        <option [value]=0 disabled
+                                        <option [value]=-1
                                             selected>--Please
                                             select
                                             a
@@ -85,6 +85,7 @@
                                             value="{{user.UserID}}">{{user.UserName}}</option>
 
                                     </select>
+                                    <p class="fst-italic">optional</p>
                                 </div>
                             </div>
                         </div>

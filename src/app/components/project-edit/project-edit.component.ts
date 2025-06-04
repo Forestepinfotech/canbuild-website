@@ -29,6 +29,9 @@ export class ProjectEditComponent {
   }
 
   onSave() {
+    this.job.ProjectStartingDate = this.rangeValue.from;
+    this.job.ProjectEndingDate = this.rangeValue.to;
+    this.job.ProjectDateRange = `${this.rangeValue.from} - ${this.rangeValue.to}`
     this.save.emit(this.job);
   }
 

@@ -3,7 +3,7 @@ import { AdminDashboard } from './../../Services/admin/dashboard';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-
+import imageCompression from 'browser-image-compression';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -21,7 +21,7 @@ export class UserCreateComponent implements OnInit {
   userTypes: { UserTypeID: number; UserType: string }[] = [];
   employeeTypes: any;
   selectedUserTypeID: number = 0;
-  selectedRole: string = '';
+  selectedRole: number = 0;
   gstOrWcb: string = '';
   firstName: string = '';
   lastName: string = '';
@@ -75,42 +75,53 @@ export class UserCreateComponent implements OnInit {
 
     }
   }
+
+
+
   onFileSelected(event: Event) {
     const fileInput = event.target as HTMLInputElement;
+
     if (fileInput.files && fileInput.files.length > 0) {
       this.selectedFile = fileInput.files[0];
+
+
     }
   }
 
-  uploadFiles(FileName: string) {
-    if (this.selectedFile) {
-      const reader = new FileReader();
+  uploadFiles(fileName: string) {
+    if (!this.selectedFile) return;
 
-      reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1]; // remove data prefix
+    const reader = new FileReader();
 
-        const payload = {
-          FileBytes: base64,
-          FileName: FileName,
-          FilePath: 'UserDoc'
-        };
+    reader.onload = () => {
+      const result = reader.result as string;
 
-        this.AdminUser.UploadFile(this.token, payload).subscribe((response) => {
-          if (response.Status) {
-            console.log(response.Message)
-          } else {
-            this.toastr.error('Error ', response.Message)
-          }
+      const base64 = result.split(',')[1]; // remove `data:image/png;base64,`
 
-        });
+      const payload = {
+        FileBytes: base64, // string
+        FileName: fileName,
+        FilePath: 'UserDoc'
+      };
 
-        if (this.selectedFile) {
-          reader.readAsDataURL(this.selectedFile); // converts file to base64
+      console.log('Payload with raw bytes:', payload);
+      this.AdminUser.UploadFile(this.token, payload).subscribe((response) => {
+        if (response.Status) {
+          this.toastr.success('User File uploaded successfully')
+          console.log("SUCCESS")
+        } else {
+          this.toastr.error('Error', response.Message);
         }
-        location.reload();
-      }
-    }
+        // You likely want to reload only after success
+        // You likely want to reload only after success
+        console.log(response.Message)
+      });
+    };
+
+    reader.readAsDataURL(this.selectedFile);
+
   }
+
   validateForm(): boolean {
     // Reset error message
     this.formError = '';
@@ -141,7 +152,7 @@ export class UserCreateComponent implements OnInit {
       return false;
     }
 
-    if (this.selectedUserTypeID === 506 && (!this.selectedRole || this.selectedRole === '')) {
+    if (this.selectedUserTypeID === 506 && (!this.selectedRole || this.selectedRole === 0)) {
       this.formError = 'Role is required';
       return false;
     }
@@ -156,10 +167,10 @@ export class UserCreateComponent implements OnInit {
       return false;
     }
 
-    if (!this.postalCode || this.postalCode.trim() === '') {
-      this.formError = 'Postal code is required';
-      return false;
-    }
+    // if (!this.postalCode || this.postalCode.trim() === '') {
+    //   this.formError = 'Postal code is required';
+    //   return false;
+    // }
 
     if (!this.province || this.province.trim() === '') {
       this.formError = 'Province is required';
@@ -172,16 +183,17 @@ export class UserCreateComponent implements OnInit {
     // }
 
     // Add email validation
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(this.email)) {
-      this.formError = 'Please enter a valid email address';
-      return false;
-    }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // if (!emailRegex.test(this.email)) {
+    //   this.formError = 'Please enter a valid email address';
+    //   return false;
+    // }
+
 
 
     // Add postal code validation for Canadian format (A1A 1A1)
     const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-    if (!postalCodeRegex.test(this.postalCode)) {
+    if (this.postalCode != "" && !postalCodeRegex.test(this.postalCode)) {
       this.formError = 'Please enter a valid Canadian postal code';
       return false;
     }
@@ -191,7 +203,7 @@ export class UserCreateComponent implements OnInit {
   }
   onSubmit() {
     this.submitted = true;
-
+    console.log(this.selectedRole)
     if (!this.validateForm()) {
       return;
     }
@@ -202,9 +214,9 @@ export class UserCreateComponent implements OnInit {
       UserType: this.userTypes.find((i) => i.UserTypeID === this.selectedUserTypeID)?.UserType || '',
       HashPassKey: "1234",
       EmailID: this.email,
-      UserImage: "dummys",
+      UserImage: 'web' + this.firstName + '_' + this.lastName + '.jpg',
       ContactNo: this.phone,
-      CreatedBy: 0,
+      CreatedBy: Number(this.userId),
       CreatedOn: new Date().toISOString(),
       isActive: 1,
       CompanyID: Number(this.companyId),
@@ -214,21 +226,24 @@ export class UserCreateComponent implements OnInit {
       // prood ID
       ProofTypeID: 2331,
       Proof: "Not Available",
-      SecurityNumber: "Not Available",
+      SecurityNumber: this.gstOrWcb ? this.gstOrWcb : "Not Available",
       ProofType: "GST No/WCB No.",
+      // gstOrWcb
       TradeID: Number(this.selectedRole),
       TradeType: "GST No/WCB No.",
       // address type
       AddressType: 1,
       Address: this.address,
       City: this.city,
-      PostalCode: this.postalCode,
+      PostalCode: this.postalCode || "",
       State: this.province,
       Country: "CA"
 
     }).subscribe((response) => {
       if (response.Status) {
         this.toastr.success('User created successfully')
+        // this.uploadFiles('web' + this.firstName + '_' + this.lastName + '.jpg');
+
         this.resetForm()
       }
       else {
@@ -243,7 +258,7 @@ export class UserCreateComponent implements OnInit {
     this.email = '';
     this.phone = '';
     this.selectedUserTypeID = 0;
-    this.selectedRole = '';
+    this.selectedRole = 0;
     this.companyId = '';
     this.address = '';
     this.city = '';

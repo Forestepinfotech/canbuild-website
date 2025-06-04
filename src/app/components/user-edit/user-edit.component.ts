@@ -12,7 +12,6 @@ export class UserEditComponent {
   @Output() cancel = new EventEmitter<void>();
 
   onSave() {
-    console.log("d")
     this.save.emit(this.user);
   }
 

@@ -21,6 +21,7 @@ import { SupervisordashboardComponent } from './components/supervisor/supervisor
 import { AdminRequirementsComponent } from './components/admin-requirements/admin-requirements.component';
 import { AdminColorComponent } from './components/admin-color/admin-color.component';
 import { WorkRequestComponent } from './components/work-request/work-request.component';
+import { AdminDocsComponent } from './components/admin-docs/admin-docs.component';
 
 export const routes: Routes = [
   {
@@ -122,6 +123,11 @@ export const routes: Routes = [
         path: 'request',
         component: WorkRequestComponent,
         title: 'Work Request',
+      },
+      {
+        path: 'docs',
+        component: AdminDocsComponent,
+        title: 'Documents',
       },
     ],
   },

@@ -114,6 +114,8 @@ export class ProjectManageComponent implements OnInit {
       })
   }
   saveJob(updatedJob: any) {
+    console.log(updatedJob)
+    console.log(updatedJob.ProjectEndingDate)
     this.AdminProject.UpdateJob(this.token, {
       JobID: updatedJob.JobID,
       JobName: updatedJob.JobName,
@@ -134,7 +136,7 @@ export class ProjectManageComponent implements OnInit {
       EmailID: updatedJob.EmailID,
       CompanyID: updatedJob.CompanyID,
       CreatedName: updatedJob.CreatedName,
-      UserID: updatedJob.UserID,
+      UserID: Number(this.userId),
       CreatedOn: updatedJob.CreatedOn,
       StatusID: updatedJob.StatusID,
       StatusName: updatedJob.StatusName
@@ -144,6 +146,7 @@ export class ProjectManageComponent implements OnInit {
           this.toastr.success('Successfully Updated the Project')
 
           this.editing = false
+          this.onUserTypeChange(1009);
         }
         else {
           this.toastr.error('Error ', res.Message)

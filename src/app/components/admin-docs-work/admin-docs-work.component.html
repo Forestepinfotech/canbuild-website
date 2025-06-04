@@ -1,0 +1,107 @@
+<app-work-documents
+    *ngIf="workDoc"
+    [work]="selectedWork"
+    (cancel)="onCancel()">
+</app-work-documents>
+<app-project-documents
+    *ngIf="jobDoc"
+    [job]="job"
+    (cancel)="onCancel()">
+</app-project-documents>
+<div class="body_scroll" *ngIf="!workDoc && !jobDoc">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12">
+                <h2>Specifications</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><i
+                                class="zmdi zmdi-home"></i> Dashboard</a></li>
+
+                    <li class="breadcrumb-item active">Manage</li>
+                </ul>
+                <button class="btn btn-primary btn-icon mobile_menu"
+                    type="button"><i
+                        class="zmdi zmdi-sort-amount-desc"></i></button>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <button
+                    class="btn btn-primary btn-icon float-right right_icon_toggle_btn"
+                    type="button"><i
+                        class="zmdi zmdi-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <div class="row clearfix m-2">
+                            <div class="col-sm-12">
+                                <button
+                                    class="btn btn-danger btn-sm"
+                                    (click)="onCancelWork()">Cancel</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="body">
+
+                    <div
+                        *ngIf="!workList || workList.length<0">
+                        Nothing to show
+                    </div>
+                    <div class="scroll-container">
+                        <div class="table-responsive">
+                            <div class="table-responsive"
+                                *ngIf="workList && workList.length >0">
+
+                                <div class="row my-4">
+                                    <div class="col-md-3 col-sm-6 mb-3"
+                                        *ngFor="let i of workList">
+                                        <div
+                                            class="card text-center shadow-sm border rounded small-card"
+                                            (click)="noWorkClick(i)"
+                                            style="cursor: pointer;">
+                                            <div class="card text-center p-3">
+                                                <i
+                                                    class="bi bi-clipboard2-check-fill text-primary mb-1"
+                                                    style="font-size: 2.5rem;"></i>
+                                                <div
+                                                    class="fw-semibold mg">{{
+                                                    i.WorkSubject }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="selectedWorkId === i.WorkID"
+                                            class="mt-2 d-flex justify-content-center gap-2 flex-wrap">
+                                            <button
+                                                class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+                                                (click)="viewJobDetails(i)">
+                                                <i
+                                                    class="bi bi-folder2-open"></i>
+                                                Job Docs
+                                            </button>
+                                            <button
+                                                class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                                (click)="assignWork(i)">
+                                                <i
+                                                    class="bi bi-file-earmark-text"></i>
+                                                Work Docs
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
