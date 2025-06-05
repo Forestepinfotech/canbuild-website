@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 export class WorkEditComponent implements OnInit {
   constructor(private AdminDashboard: AdminDashboard, private AdminWork: AdminWork, private toastr: ToastrService) { }
 
-  rangeValue: { from: Date; to: Date } = { from: new Date(), to: new Date() };
+  // rangeValue: { from: Date; to: Date } = { from: new Date(), to: new Date() };
 
   @Input() work: any = {};
   @Output() save = new EventEmitter<any>();
@@ -27,12 +27,19 @@ export class WorkEditComponent implements OnInit {
 
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      console.log(this.work)
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';
       const start = this.work?.StartDate ? new Date(this.work.StartDate) : new Date();
       const end = this.work?.EndDate ? new Date(this.work.EndDate) : new Date();
-      this.rangeValue = { from: start, to: end };
+      // this.rangeValue = { from: start, to: end };
+
+      if (typeof this.work.StartTime === 'string') {
+        this.work.StartTime = new Date(`1970-01-01T${this.work.StartTime}`);
+      }
+
+
 
       this.AdminDashboard.GetColorNotes(companyID, token, '-1')
         .subscribe({
@@ -59,6 +66,8 @@ export class WorkEditComponent implements OnInit {
             this.toastr.error('Error' + err)
           }
         })
+
+
     }
   }
   onSave() {
@@ -66,20 +75,25 @@ export class WorkEditComponent implements OnInit {
     const selectedColorDetail = this.color.find(
       (i: any) => i.ColorID == this.work.ColorID
     );
+    const selectedPriorirtyDetail = this.priority.find(
+      (i: any) => i.PriorityID == this.work.PriorityID
+    );
+    const formatTime = (date: Date) => {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
     this.work.ColorID = this.work.ColorID,
       this.work.ColorName = selectedColorDetail.ColorName,
       this.work.Color_Hex = selectedColorDetail.Color_Hex,
       this.work.ColorDetail = selectedColorDetail.ColorDetail,
-      this.work.StartDate = new Date(this.rangeValue.from).toLocaleDateString();
-    this.work.EndDate = new Date(this.rangeValue.to).toLocaleDateString();
-    this.work.StartTime = this.rangeValue.from.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    this.work.EndTime = this.rangeValue.to.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    const selectedPriorirtyDetail = this.priority.find(
-      (i: any) => i.PriorityID == this.work.PriorityID
-    );
-    this.work.PriorityName = selectedPriorirtyDetail.PriorityName
-    this.work.PriorityLevel = selectedPriorirtyDetail.PriorityLevel
-    console.log(this.work.StartDate)
+      this.work.StartDate = new Date(this.work.StartDate ?? new Date()).toLocaleDateString(),
+      this.work.EndDate = new Date(this.work.EndDate ?? new Date()).toLocaleDateString(),
+
+      this.work.PriorityName = selectedPriorirtyDetail.PriorityName
+    this.work.PriorityLevel = selectedPriorirtyDetail.PriorityLevel;
+    this.work.StartTime = formatTime(this.work.StartTime)
+    this.work.EndTime = formatTime(this.work.EndTime)
+
+    console.log(this.work)
     this.save.emit(this.work);
   }
 

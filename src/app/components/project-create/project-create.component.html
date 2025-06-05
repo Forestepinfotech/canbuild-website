@@ -40,11 +40,17 @@
                                                 <span
                                                     class="sr-only">Loading...</span>
                                             </div></div></div>
-
+                                    <div
+                                        *ngIf="user === 'error'  && ErrorMessage!=='' ">
+                                        <div>
+                                            <p
+                                                class="danger">{{ErrorMessage}}</p>
+                                        </div>
+                                    </div>
                                     <select class="form-control show-tick"
                                         [(ngModel)]="selectedUserID"
                                         name="selectedUserID"
-                                        *ngIf="user">
+                                        *ngIf="user && user!=='error'">
                                         <option [value]=0 disabled
                                             selected>--Please
                                             select

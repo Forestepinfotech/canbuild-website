@@ -36,7 +36,7 @@ export class ProjectCreateComponent implements OnInit {
     to: (new Date() as any)['fp_incr'](10),
   };
   formError: string = "";
-
+  ErrorMessage: string = '';
 
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -46,17 +46,26 @@ export class ProjectCreateComponent implements OnInit {
       this.token = token;
       this.companyId = companyID;
       this.userId = userid;
-      const request504 = this.AdminUser.GetUsers(companyID, token, '-1', 1, 504, 1, 100);
-      const request506 = this.AdminUser.GetUsers(companyID, token, '-1', 1, 506, 1, 100);
+      // ...existing code...
+      this.AdminUser.GetUsers(companyID, token, '-1', 1, 507, 1, 100)
+        .subscribe((response) => {
+          if (response.Status) {
+            console.log("here")
+            this.user = response.Result
+            console.log("USER IS " + this.user)
+          } else {
+            this.toastr.error('Error Getting Users')
+            this.ErrorMessage = response.Message;
+            this.user = "error";
+          }
+        },
+          (error) => {
+            this.toastr.error('Error Getting Users');
+            this.ErrorMessage = error?.message || 'Unknown error';
+          }
+        );
 
-      forkJoin([request504, request506]).subscribe(([response504, response506]) => {
-        console.log(response504, response506)
-        if (response504.Status || response506.Status) {
-          this.user = [...(response504?.Result || []), ...(response506?.Result || [])];
-        } else {
-          this.toastr.error('Error Getting Users')
-        }
-      });
+      // ...existing code...
     }
   }
 

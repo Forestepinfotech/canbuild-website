@@ -71,10 +71,17 @@
                                                     class="sr-only">Loading...</span>
                                             </div></div>
                                     </div>
+                                    <div
+                                        *ngIf="users == 'error'  && ErrorMessage!=='' ">
+                                        <div>
+                                            <p
+                                                class="danger">{{ErrorMessage}}</p>
+                                        </div>
+                                    </div>
                                     <select class="form-control show-tick"
                                         [(ngModel)]="selectedUser"
                                         name="selectedUser"
-                                        *ngIf="users">
+                                        *ngIf="users && users!=='error'">
                                         <option [value]=-1
                                             selected>--Please
                                             select
@@ -115,7 +122,10 @@
                         <div class="row clearfix">
                             <div class="col-sm-4">
                                 <div class="form-group">
+                                    <h2 class="card-inside-title">Start
+                                        Date</h2>
                                     <div class="input-group">
+
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i
                                                     class="zmdi zmdi-calendar"></i></span>
@@ -125,13 +135,94 @@
                                             class="form-control"
                                             type="text"
                                             mwlFlatpickr
-                                            [(ngModel)]="rangeValue"
-                                            [altInput]="true"
-                                            [enableTime]="true"
+                                            [(ngModel)]="startDate"
+                                            [enableTime]="false"
                                             [convertModelValue]="true"
-                                            mode="range"
-                                            dateFormat="Y-m-d H:i"
-                                            [altFormat]="'F j, Y h:i K'" />
+                                            dateFormat="Y-m-d"
+                                            [altInput]="true"
+                                            [altFormat]="'F j, Y'" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <h2 class="card-inside-title">Start
+                                        Time</h2>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i
+                                                    class="zmdi zmdi-calendar"></i></span>
+                                        </div>
+                                        <!-- Start Time -->
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            mwlFlatpickr
+                                            [(ngModel)]="startTime"
+                                            [noCalendar]="true"
+                                            [enableTime]="true"
+                                            dateFormat="H:i"
+                                            [convertModelValue]="true"
+                                            [altInput]="true"
+                                            [altFormat]="'h:i '" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <h2 class="card-inside-title">End
+                                        Date</h2>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i
+                                                    class="zmdi zmdi-calendar"></i></span>
+                                        </div>
+
+                                        <!-- End Date -->
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            mwlFlatpickr
+                                            [(ngModel)]="endDate"
+                                            [enableTime]="false"
+                                            [convertModelValue]="true"
+                                            dateFormat="Y-m-d"
+                                            [altInput]="true"
+                                            [altFormat]="'F j, Y'" />
+
+                                        <!-- End Time -->
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <h2 class="card-inside-title">End Time</h2>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i
+                                                    class="zmdi zmdi-calendar"></i></span>
+                                        </div>
+
+                                        <!-- End Time -->
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            mwlFlatpickr
+                                            [(ngModel)]="endTime"
+                                            [noCalendar]="true"
+                                            [enableTime]="true"
+                                            dateFormat="H:i"
+                                            [convertModelValue]="true"
+                                            [altInput]="true"
+                                            [altFormat]="'h:i K'" />
+
                                     </div>
                                 </div>
                             </div>

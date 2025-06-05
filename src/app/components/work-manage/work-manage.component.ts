@@ -178,7 +178,7 @@ export class WorkManageComponent implements OnInit {
     this.docs = false;
   }
   onDelete(work: any) {
-    if (!confirm(`Are you sure you want to delete project: ${work.WorkStatus}?`)) {
+    if (!confirm(`Are you sure you want to delete project: ${work.WorkSubject}?`)) {
       return;
     }
     this.AdminWork.DeleteWork(this.token, work)
@@ -248,6 +248,7 @@ export class WorkManageComponent implements OnInit {
           if (res.Status) {
             this.editing = false
             this.toastr.success('Work Saved Successfully')
+            window.location.reload()
           } else {
             this.toastr.error('Error ', res.Message)
           }

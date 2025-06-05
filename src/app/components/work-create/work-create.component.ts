@@ -39,10 +39,14 @@ export class WorkCreateComponent implements OnInit {
     from: new Date(),
     to: (new Date() as any)['fp_incr'](10),
   };
+  startDate: Date = new Date();
+  startTime: Date = new Date();
+  endDate: Date = (() => { const d = new Date(); d.setDate(d.getDate() + 10); return d; })();
+  endTime: Date = new Date();
   isRadius: boolean = false;
   radius: number = 0;
   formError: string = ''
-
+  ErrorMessage: string = ';'
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -70,7 +74,7 @@ export class WorkCreateComponent implements OnInit {
         token,
         '-1',
         -1,
-        507,
+        504,
         1,
         100
       ).subscribe(response => {
@@ -79,6 +83,8 @@ export class WorkCreateComponent implements OnInit {
 
         } else {
           this.toastr.error('Error ', response.Message)
+          this.ErrorMessage = response.Message
+          this.users = "error"
         }
       });
 
@@ -144,16 +150,16 @@ export class WorkCreateComponent implements OnInit {
       return false;
     }
 
-    // Check date range
-    if (!this.rangeValue.from || !this.rangeValue.to) {
-      this.formError = 'Project date range is required';
-      return false;
-    }
+    // // Check date range
+    // if (!this.rangeValue.from || !this.rangeValue.to) {
+    //   this.formError = 'Project date range is required';
+    //   return false;
+    // }
 
-    if (this.rangeValue.from > this.rangeValue.to) {
-      this.formError = 'End date must be after start date';
-      return false;
-    }
+    // if (this.rangeValue.from > this.rangeValue.to) {
+    //   this.formError = 'End date must be after start date';
+    //   return false;
+    // }
 
     // All validations passed
     return true;
@@ -169,8 +175,9 @@ export class WorkCreateComponent implements OnInit {
     const selectedPriorirtyDetail = this.priority.find(
       (i: any) => i.PriorityID == this.setPriority
     );
-    const formatTime = (date: Date) =>
-      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    const formatTime = (date: Date) => {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
 
     const selectedJobDetail = this.projects.find(
       (i: any) => i.JobID == this.selectedProject
@@ -179,13 +186,13 @@ export class WorkCreateComponent implements OnInit {
       (i: any) => i.UserID == this.selectedUser
     );
 
-
+    console.log(this.startDate)
     const payload: WorkModel = {
       WorkSubject: this.workSubject,
       WorkDetail: this.workNote,
       isHourly: false,
-      StartTime: formatTime(this.rangeValue.from),
-      EndTime: formatTime(this.rangeValue.to),
+      StartTime: formatTime(this.startTime),
+      EndTime: formatTime(this.endTime),
       WorkTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       isRadius: this.isRadius,
       Radius: this.radius.toString(),
@@ -206,8 +213,8 @@ export class WorkCreateComponent implements OnInit {
       CompanyID: Number(this.companyId),
       CompanyName: '',
 
-      StartDate: new Date(this.rangeValue.from).toLocaleDateString(),
-      EndDate: new Date(this.rangeValue.to).toLocaleDateString(),
+      StartDate: new Date(this.startDate ?? new Date()).toLocaleDateString(),
+      EndDate: new Date(this.endDate ?? new Date()).toLocaleDateString(),
       CreatedBy: Number(this.userId),
 
       StatusID: selectedJobDetail.StatusID,
