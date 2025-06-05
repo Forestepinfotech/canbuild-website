@@ -207,7 +207,8 @@ export class UserCreateComponent implements OnInit {
     if (!this.validateForm()) {
       return;
     }
-
+    const companyID = localStorage.getItem('CompanyID') || '';
+    const userid = localStorage.getItem('UserID') || ' ';
     this.AdminUser.CreateUser(this.token, {
       UserName: this.firstName,
       UserFullName: this.lastName,
@@ -216,10 +217,10 @@ export class UserCreateComponent implements OnInit {
       EmailID: this.email,
       UserImage: 'web' + this.firstName + '_' + this.lastName + '.jpg',
       ContactNo: this.phone,
-      CreatedBy: Number(this.userId),
+      CreatedBy: Number(userid),
       CreatedOn: new Date().toISOString(),
       isActive: 1,
-      CompanyID: Number(this.companyId),
+      CompanyID: Number(companyID),
       // get the company name
       CompanyName: "Milestone",
       UserTypeID: this.selectedUserTypeID,
@@ -259,12 +260,11 @@ export class UserCreateComponent implements OnInit {
     this.phone = '';
     this.selectedUserTypeID = 0;
     this.selectedRole = 0;
-    this.companyId = '';
     this.address = '';
     this.city = '';
     this.postalCode = '';
     this.province = '';
-    // If you're using a reactive form, also call: this.form.reset();
+
   }
 
 
