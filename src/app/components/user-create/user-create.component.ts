@@ -202,8 +202,16 @@ export class UserCreateComponent implements OnInit {
     return true;
   }
   onSubmit() {
+
     this.submitted = true;
-    console.log(this.selectedRole)
+    const match = this.userTypes.find((i) => {
+      const isMatch = i.UserTypeID == this.selectedUserTypeID;
+      if (isMatch) {
+        console.log('Matched:', i);
+      }
+      return isMatch;
+    });
+    console.log(match?.UserType)
     if (!this.validateForm()) {
       return;
     }
@@ -212,7 +220,7 @@ export class UserCreateComponent implements OnInit {
     this.AdminUser.CreateUser(this.token, {
       UserName: this.firstName,
       UserFullName: this.lastName,
-      UserType: this.userTypes.find((i) => i.UserTypeID === this.selectedUserTypeID)?.UserType || '',
+      UserType: match?.UserType || '',
       HashPassKey: "1234",
       EmailID: this.email,
       UserImage: 'web' + this.firstName + '_' + this.lastName + '.jpg',
