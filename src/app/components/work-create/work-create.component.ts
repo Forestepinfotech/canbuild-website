@@ -1,3 +1,4 @@
+import { AdminNotification } from './../../Services/admin/notification';
 import { AdminWork } from './../../Services/admin/work';
 import { AdminDashboard } from './../../Services/admin/dashboard';
 import { AdminUser } from './../../Services/admin/User';
@@ -18,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class WorkCreateComponent implements OnInit {
   constructor(
-    private AdminProject: AdminProject, private AdminUser: AdminUser, private AdminDashboard: AdminDashboard, private AdminWork: AdminWork, private toastr: ToastrService
+    private AdminProject: AdminProject, private AdminUser: AdminUser, private AdminDashboard: AdminDashboard, private AdminWork: AdminWork, private toastr: ToastrService, private AdminNotification: AdminNotification
   ) {
 
   }
@@ -47,6 +48,7 @@ export class WorkCreateComponent implements OnInit {
   radius: number = 0;
   formError: string = ''
   ErrorMessage: string = ';'
+  isNotiication: boolean = true;
   ngOnInit(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -164,11 +166,62 @@ export class WorkCreateComponent implements OnInit {
     // All validations passed
     return true;
   }
+  sendNotificationDevice(deviceToken: string) {
+    if (this.isNotiication) {
+      const selectedUserDetail = this.users.find(
+        (i: any) => i.UserID == this.selectedUser
+      );
+      const payload = {
+        Token: deviceToken,
+        Title: 'New Work Assigned',
+        Body: `You have been assigned new work: ${this.workSubject ?? ''}`,
+        accessToken: this.token,
+        Data: {
+          action: '1',
+          data: "We’re pleased to inform you that a new job has been assigned to you.",
+          userid: String(this.selectedUser),
+          type: selectedUserDetail?.UserTypeID ?? ""
+        }
+      };
+
+      this.AdminNotification.SendNotification(this.token, payload)
+        .subscribe({
+          next: (data) => {
+            if (data.Status) {
+              console.log(data.Result)
+              location.reload()
+            } else {
+              this.toastr.error('Error ', data.Message)
+            }
+          },
+          error: (err) => {
+            this.toastr.error('Error' + err)
+          }
+        });
+    }
+  }
+
+  sendNotification() {
+    if (this.isNotiication) {
+      this.AdminNotification.GetUserId(this.token, this.selectedUser)
+        .subscribe({
+          next: (data) => {
+            if (data.Status) {
+              this.sendNotificationDevice(data.Result[0]["NotificationToken"])
+            } else {
+              this.toastr.error('Error ', data.Message)
+            }
+          },
+          error: (err) => {
+            this.toastr.error('Error' + err)
+          }
+        });
+    }
+  }
   createWork() {
     if (!this.validateForm()) {
       return; // validateForm sets the error message
     }
-    console.log(this.selectedColor)
     const selectedColorDetail = this.color.find(
       (i: any) => i.ColorID == this.selectedColor
     );
@@ -186,7 +239,6 @@ export class WorkCreateComponent implements OnInit {
       (i: any) => i.UserID == this.selectedUser
     );
 
-    console.log(this.startDate)
     const payload: WorkModel = {
       WorkSubject: this.workSubject,
       WorkDetail: this.workNote,
@@ -234,7 +286,7 @@ export class WorkCreateComponent implements OnInit {
       next: (res) => {
         if (res.Status) {
           this.toastr.success('Work Created Successfully')
-          location.reload()
+          this.sendNotification()
         } else {
           this.toastr.error('Error ', res.Message)
         }

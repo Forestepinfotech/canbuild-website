@@ -1,13 +1,14 @@
+<app-project-documents
+    *ngIf="workDoc"
+    [job]="job"
+    (cancel)="onCancel()">
+
+</app-project-documents>
 <app-work-documents
     *ngIf="workDoc"
     [work]="selectedWork"
     (cancel)="onCancel()">
 </app-work-documents>
-<app-project-documents
-    *ngIf="jobDoc"
-    [job]="job"
-    (cancel)="onCancel()">
-</app-project-documents>
 <div class="body_scroll" *ngIf="!workDoc && !jobDoc">
     <div class="block-header">
         <div class="row">
@@ -77,7 +78,7 @@
                                             </div>
                                         </div>
 
-                                        <div *ngIf="selectedWorkId === i.WorkID"
+                                        <!-- <div *ngIf="selectedWorkId === i.WorkID"
                                             class="mt-2 d-flex justify-content-center gap-2 flex-wrap">
                                             <button
                                                 class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
@@ -93,7 +94,7 @@
                                                     class="bi bi-file-earmark-text"></i>
                                                 Work Docs
                                             </button>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
 

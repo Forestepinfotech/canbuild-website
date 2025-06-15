@@ -108,7 +108,7 @@ export class AdminWork {
         });
     }
 
-    GetWorkDoc(token: string, documentId: string, workId: number, userId: number, jobId: number, jobName: string, pagenumber: number, pageSize: number)
+    GetWorkDoc(token: string, documentId: string, workId: number, userId: number, jobId: number, jobName: string, pagenumber: number, pageSize: number, type: number)
         : Observable<any> {
         const headers = new HttpHeaders({
             Token: token, // Pass the token in the Authorization header
@@ -122,7 +122,8 @@ export class AdminWork {
             .set('jobname', jobName.toString())
             .set('PageNumber', pagenumber.toString())
             .set('PageSize', pageSize.toString())
-        return this.httpClient.get<any>(this.apiUrl + 'Documents/WorkDocReturn', {
+            .set('DocTypeID', type)
+        return this.httpClient.get<any>(this.apiUrl + 'Documents/WorkDocReturnByType', {
             headers,
             params
         });

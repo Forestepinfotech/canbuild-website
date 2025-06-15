@@ -354,7 +354,11 @@ export class ProjectDocumentsComponent implements OnInit {
         next: (res) => {
           if (res.Status) {
             this.toaster.success('Document deleted');
-            this.docs = this.docs.filter((d: any) => d.DocumentID !== doc.DocumentID);
+            this.docs = this.docs.filter((d: any) => {
+              console.log(d.JobDocument);
+              console.log(doc.JobDocument);
+              return d.JobDocument !== doc.JobDocument;
+            });
           } else {
             this.toaster.error(res.Message || 'Failed to delete document');
           }
@@ -367,13 +371,19 @@ export class ProjectDocumentsComponent implements OnInit {
   }
 
   downloadDoc(doc: any) {
-    this.toaster.error('Error ', 'Cant fetch docs at the moment')
-
-
-    // Implement document download
-    // Example implementation:
-    // const url = `http://triad.forestepinstitute.com/api/Job/DownloadDoc?documentid=${doc.DocumentID}&token=${this.token}`;
-    // window.open(url, '_blank');
+    // Replace this with the actual document URL or data string for the user
+    if (doc.JobDocument) {
+      // const link = document.createElement('a');
+      // link.href = `http://triad.forestepinstitute.com/Images/JobDoc/${doc?.JobDocument}`;
+      // link.download = `${doc?.JobDocument || 'UserDocument'}`;
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      window.open(`http://triad.forestepinstitute.com/Images/JobDoc/${doc?.JobDocument}`, '_blank');
+    }
+    else {
+      this.toaster.error('Error ', 'This Document Can not be viewed at this time')
+    }
   }
 
   onFileSelected(event: Event) {
@@ -384,39 +394,38 @@ export class ProjectDocumentsComponent implements OnInit {
     }
   }
 
-  uploadFiles(FileName: string) {
-    if (this.selectedFile) {
-      const reader = new FileReader();
+  uploadFiles(fileName: string) {
+    if (!this.selectedFile) return;
 
-      reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1]; // remove data prefix
+    const reader = new FileReader();
 
-        const payload = {
-          FileBytes: base64,
-          FileName: FileName,
-          FilePath: 'JobDoc'
-        };
+    reader.onload = () => {
+      const result = reader.result as string;
 
-        this.adminuser.UploadFile(this.token, payload).subscribe({
-          next: (res) => {
-            if (res.Status) {
-              this.toaster.success(res.Message || "File uploaded successfully");
-            } else {
-              this.toaster.error(res.Message || "File upload failed");
-            }
-          },
-          error: (err) => {
-            this.toaster.error('Error uploading file');
-            console.error(err);
-          }
-        });
+      const base64 = result.split(',')[1]; // remove `data:image/png;base64,`
 
-        if (this.selectedFile) {
-          reader.readAsDataURL(this.selectedFile); // converts file to base64
+      const payload = {
+        FileBytes: base64, // string
+        FileName: fileName,
+        FilePath: 'JobDoc'
+      };
+
+      console.log('Payload with raw bytes:', payload);
+      this.adminuser.UploadFile(this.token, payload).subscribe((response) => {
+        if (response.Status) {
+          this.toaster.success('User File uploaded successfully')
+          console.log("SUCCESS")
+        } else {
+          this.toaster.error('Error', response.Message);
         }
-        location.reload();
-      }
-    }
+        // You likely want to reload only after success
+        // You likely want to reload only after success
+        console.log(response.Message)
+      });
+    };
+
+    reader.readAsDataURL(this.selectedFile);
+
   }
   onSubmitNewDoc() {
     const formData = new FormData();
@@ -441,7 +450,7 @@ export class ProjectDocumentsComponent implements OnInit {
     if (this.newDoc.Employee) {
       selectedRoles.push({ id: 506, type: 'Employee' });
     }
-
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
     // You need to construct a jobDetail object here with the required properties
     const documentTypeName = this.typeList.find(t => t.id === this.newDoc.DocumentTypeID)?.name || '';
 
@@ -451,7 +460,7 @@ export class ProjectDocumentsComponent implements OnInit {
         DocumentTypeID: this.newDoc.DocumentTypeID,
         DocumentType: documentTypeName,
         PermissionTo: role.id,
-        JobDocument: this.selectedFile ? 'Web' + documentTypeName + this.selectedFile.name : '',
+        JobDocument: this.selectedFile ? 'Web' + documentTypeName + timestamp + this.selectedFile.name : '',
         UserID: role.id,
         UserType: role.type
       };
@@ -459,11 +468,14 @@ export class ProjectDocumentsComponent implements OnInit {
       this.adminJob.CreateJobDoc(this.token, jobDetail).subscribe((response) => {
         if (response.Status) {
           this.toaster.success(`Document Added for ${role.type}`)
+
         } else {
           this.toaster.error(`Document NOT Added for ${role.type}`)
         }
       });
+
     })
+    this.uploadFiles(this.selectedFile ? 'Web' + documentTypeName + timestamp + this.selectedFile.name : '')
     // Reset the form fields after submission
     this.newDoc = {
       DocumentTypeID: 201,
@@ -474,6 +486,6 @@ export class ProjectDocumentsComponent implements OnInit {
       file: null
     };
     this.selectedFile = null;
-
+    this.loadDocs();
   }
 }

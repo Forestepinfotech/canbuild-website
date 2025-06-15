@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminWork } from '../../Services/admin/work';
 import { ToastService } from '../../Services/toast.service';
+import { time } from 'node:console';
 
 @Component({
   selector: 'app-work-documents',
@@ -67,7 +68,7 @@ export class WorkDocumentsComponentOnInit {
   loadDocs(page: number = 1, size: number = 5) {
     this.currentPage = page;
     this.docs = ""
-    this.adminwork.GetWorkDoc(this.token, '-1', this.work.WorkID, this.work.UserID, this.work.JobID, this.work.JobName, page, size)
+    this.adminwork.GetWorkDoc(this.token, "-1", this.work.WorkID, this.work.UserID, this.work.JobID, this.work.JobName, page, size, this.selectedType)
       .subscribe({
         next: (data) => {
           if (data.Status) {
@@ -97,14 +98,15 @@ export class WorkDocumentsComponentOnInit {
 
   deleteDoc(doc: any) {
     if (!confirm('Are you sure you want to delete this document?')) {
-      return
+      return;
     }
-    this.adminJob.DeleteJobDoc(this.token, doc.JobDocument)
+    console.log('Deleting document:', doc.DocumentID);
+    this.adminJob.DeleteJobDoc(this.token, doc.DocumentID)
       .subscribe({
         next: (response) => {
           if (response.Status) {
             this.docs = this.docs.filter((d: any) => d.DocumentID !== doc.DocumentID);
-            this.toaster.error('Documnet Deleted Successfully')
+            this.toaster.success('Documnet Deleted Successfully')
           } else {
             this.toaster.error('Error Deleting Docs, Please try Again')
           }
@@ -116,11 +118,20 @@ export class WorkDocumentsComponentOnInit {
   }
 
   downloadDoc(doc: any) {
-    alert("Can not fetch the doc at the moment!")
-    // Implement document download
-    // Example implementation:
-    // const url = `http://triad.forestepinstitute.com/api/Job/DownloadDoc?documentid=${doc.DocumentID}&token=${this.token}`;
-    // window.open(url, '_blank');
+    // Replace this with the actual document URL or data string for the user
+    if (doc.DocumentName) {
+      // const link = document.createElement('a');
+      // link.href = `http://triad.forestepinstitute.com/Images/JobDoc/${doc?.DocumentName}`;
+      // link.download = `${doc?.DocumentName || 'UserDocument'}`;
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      window.open(`http://triad.forestepinstitute.com/Images/JobDoc/${doc?.DocumentName}`, '_blank');
+
+    }
+    else {
+      this.toaster.error('Error ', 'This Document Can not be viewed at this time')
+    }
   }
 
   onFileSelected(event: Event) {
@@ -131,35 +142,36 @@ export class WorkDocumentsComponentOnInit {
     }
   }
 
-  uploadFiles(FileName: string) {
-    if (this.selectedFile) {
-      const reader = new FileReader();
+  uploadFiles(fileName: string) {
+    if (!this.selectedFile) return;
 
-      reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1]; // remove data prefix
+    const reader = new FileReader();
 
-        const payload = {
-          FileBytes: base64,
-          FileName: FileName,
-          FilePath: 'JobDoc'
-        };
+    reader.onload = () => {
+      const result = reader.result as string;
 
-        this.adminuser.UploadFile(this.token, payload).subscribe((response) => {
-          if (response.Status) {
+      const base64 = result.split(',')[1]; // remove `data:image/png;base64,`
 
-          } else {
-            this.toaster.error("File was not uploaded successfully, pleae try again later")
-            console.log(response.Message);
-          }
+      const payload = {
+        FileBytes: base64, // string
+        FileName: fileName,
+        FilePath: 'JobDoc'
+      };
 
-        });
-
-        if (this.selectedFile) {
-          reader.readAsDataURL(this.selectedFile); // converts file to base64
+      console.log('Payload with raw bytes:', payload);
+      this.adminuser.UploadFile(this.token, payload).subscribe((response) => {
+        if (response.Status) {
+          this.toaster.success('User File uploaded successfully')
+          console.log("SUCCESS")
+        } else {
+          this.toaster.error('Error', response.Message);
         }
-        location.reload();
-      }
-    }
+        console.log(response.Message)
+      });
+    };
+
+    reader.readAsDataURL(this.selectedFile);
+
   }
   onSubmitNewDoc() {
     const formData = new FormData();
@@ -168,7 +180,7 @@ export class WorkDocumentsComponentOnInit {
     console.log(formData)
 
 
-
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
     // You need to construct a jobDetail object here with the required properties
     const documentTypeName = this.typeList.find(t => t.id === this.newDoc.DocumentTypeID)?.name || '';
     const workDocDetail = {
@@ -178,7 +190,7 @@ export class WorkDocumentsComponentOnInit {
       WorkDetail: this.work.WorkDetail,
       DocumentTypeID: this.newDoc.DocumentTypeID,
       DocumentType: documentTypeName,
-      DocumentName: this.selectedFile ? 'web' + this.selectedFile.name : '',
+      DocumentName: this.selectedFile ? 'web' + timestamp + this.selectedFile.name : '',
       DocumentDetail: this.newDoc.DocumentDetail,
       isActive: -1,
       isDeleted: 0,
@@ -187,7 +199,8 @@ export class WorkDocumentsComponentOnInit {
     };
     this.adminwork.CreateWorkDoc(this.token, workDocDetail).subscribe((response) => {
       if (response.Status) {
-        this.toaster.error('Successful in Creating a new Doc')
+        this.toaster.success('Successful in Creating a new Doc')
+        this.uploadFiles(this.selectedFile ? 'web' + timestamp + this.selectedFile.name : '')
         this.newDoc.DocumentDetail = ''
         this.newDoc.DocumentTypeID = 201
         this.selectedFile = null

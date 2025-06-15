@@ -223,7 +223,7 @@ export class UserCreateComponent implements OnInit {
       UserType: match?.UserType || '',
       HashPassKey: "1234",
       EmailID: this.email,
-      UserImage: 'web' + this.firstName + '_' + this.lastName + '.jpg',
+      UserImage: 'web' + this.firstName + '_' + this.lastName + this.selectedFile?.name,
       ContactNo: this.phone,
       CreatedBy: Number(userid),
       CreatedOn: new Date().toISOString(),
@@ -251,7 +251,9 @@ export class UserCreateComponent implements OnInit {
     }).subscribe((response) => {
       if (response.Status) {
         this.toastr.success('User created successfully')
-        // this.uploadFiles('web' + this.firstName + '_' + this.lastName + '.jpg');
+        if (this.selectedFile) {
+          this.uploadFiles('web' + this.firstName + '_' + this.lastName + this.selectedFile.name);
+        }
 
         this.resetForm()
       }

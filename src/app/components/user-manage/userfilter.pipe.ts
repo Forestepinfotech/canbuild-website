@@ -9,7 +9,10 @@ export class UserNameFilterPipe implements PipeTransform {
         const lowerSearch = search.toLowerCase();
         return user.filter(u =>
             u.UserName?.toLowerCase().includes(lowerSearch) ||
-            u.UserFullName?.toLowerCase().includes(lowerSearch)
+            u.UserFullName?.toLowerCase().includes(lowerSearch) ||
+            u.EmailID?.toLowerCase().includes(lowerSearch) ||
+            u.ContactNo?.toLowerCase().includes(lowerSearch) ||
+            u.SecurityNumber?.toLowerCase().includes(lowerSearch)
         );
     }
 }

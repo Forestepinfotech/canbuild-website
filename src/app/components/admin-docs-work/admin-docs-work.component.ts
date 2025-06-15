@@ -65,6 +65,8 @@ export class AdminDocsWorkComponent implements OnInit {
   noWorkClick(work: any) {
     this.selectedWork = work;
     this.selectedWorkId = work.WorkID;
+    this.workDoc = true;
+    this.jobDoc = false
   }
 
   viewJobDetails(work: any) {
@@ -75,8 +77,7 @@ export class AdminDocsWorkComponent implements OnInit {
 
   assignWork(work: any) {
     console.log('Assigning work for:', work);
-    this.workDoc = true;
-    this.jobDoc = false
+
     console.log(this.workDoc)
   }
 

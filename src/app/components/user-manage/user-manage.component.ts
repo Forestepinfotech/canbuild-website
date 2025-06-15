@@ -117,7 +117,7 @@ export class UserManageComponent implements OnInit {
       Address: updatedUser.Address,
       City: updatedUser.City,
       PostalCode: updatedUser.PostalCode,
-      State: updatedUser.Province,
+      State: updatedUser.State,
       Country: updatedUser.Country,
       UserName: updatedUser.UserName,
       UserFullName: updatedUser.UserFullName,
@@ -154,7 +154,20 @@ export class UserManageComponent implements OnInit {
 
   }
   doc(user: any) {
-    this.toastr.error('Error ', 'Doc cant be shown at the moment')
+    // Replace this with the actual document URL or data string for the user
+    if (user.UserImage) {
+      // const link = document.createElement('a');
+      // link.href = `http://triad.forestepinstitute.com/Images/UserDoc/${user?.UserImage}`;
+      // link.download = `${user?.name || 'UserDocument'}.png`;
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      window.open(`http://triad.forestepinstitute.com/Images/JobDoc/${user?.UserImage}`, '_blank');
+
+    }
+    else {
+      this.toastr.error('Error ', 'This Document Can not be viewed at this time')
+    }
   }
   onDelete(user: any) {
     if (!confirm(`Are you sure you want to delete user: ${user.UserName}?`)) {
