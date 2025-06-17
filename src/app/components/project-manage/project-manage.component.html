@@ -65,22 +65,22 @@
                         </div>
 
                     </div>
-
-                    <div *ngIf="jobList&&jobList==='changing'">
+                    <div
+                        *ngIf="jobList==='error'">
+                        Nothing to show
+                    </div>
+                    <div *ngIf="jobList==='changing'">
                         <div class="d-flex justify-content-center w-100">
                             <div
                                 class="spinner-border" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div></div>
                     </div>
-                    <div
-                        *ngIf="!jobList">
-                        Nothing to show
-                    </div>
+
                     <div class="scroll-container">
                         <div class="table-responsive">
                             <div class="table-responsive"
-                                *ngIf="jobList!=='changing' && jobList">
+                                *ngIf="jobList!=='error'">
 
                                 <table
                                     class="table table-bordered table-striped table-hover dataTable js-exportable">

@@ -49,20 +49,27 @@
 
                 <option
                     *ngFor="let i of typeList"
-                    value="{{i.id}}">{{i.name}}</option>
+                    value="{{i.DocumentTypeID}}">{{i.DocumentType}}</option>
 
             </select>
-            <div class="w-100" *ngIf="!docs"><div
+            <div class="w-100" *ngIf="docs=='changing'"><div
                     class="d-flex justify-content-center w-100">
                     <div
                         class="spinner-border"
                         role="status">
                         <span
                             class="sr-only">Loading...</span>
-                    </div></div></div>
+                    </div></div>
+            </div>
+            <div class="w-100" *ngIf="docs==='none'"><div
+                    class="d-flex justify-content-center w-100">
+
+                    <p>No document found to load</p>
+                </div>
+            </div>
 
             <div class="table-responsive"
-                *ngIf="docs!=='changing' && docs">
+                *ngIf="docs!=='changing' && docs && docs!=='none'">
 
                 <table
                     class="table table-bordered table-striped table-hover dataTable js-exportable">
@@ -173,7 +180,8 @@
                                 [(ngModel)]="newDoc.DocumentTypeID"
                                 name="docType" required>
                                 <option *ngFor="let type of typeList"
-                                    [value]="type.id">{{ type.name }}</option>
+                                    [value]="type.DocumentTypeID">{{
+                                    type.DocumentType }}</option>
                             </select>
                         </div>
                     </div>

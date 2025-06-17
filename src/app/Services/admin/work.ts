@@ -38,6 +38,20 @@ export class AdminWork {
         });
     }
 
+
+    GetDocId(token: string)
+        : Observable<any> {
+        const headers = new HttpHeaders({
+            Token: token, // Pass the token in the Authorization header
+        });
+        const params = new HttpParams()
+
+        return this.httpClient.get<any>(this.apiUrl + 'Misc/DocmentTypeReturn/-1', {
+            headers,
+            params
+        });
+    }
+
     GetWork(token: string, companyId: string, managerId: number, userId: number, jobId: number)
         : Observable<any> {
         const headers = new HttpHeaders({

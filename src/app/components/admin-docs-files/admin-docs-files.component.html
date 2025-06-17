@@ -1,0 +1,132 @@
+
+
+<div class="body_scroll">
+    <div class="block-header">
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-12 mt-4">
+                <h2>Work Document</h2>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Exportable Table -->
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>Work Documents of
+                                {{work.WorkSubject}}</strong> </h2>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <button
+                                class="btn btn-danger btn-md"
+                                (click)="onCancel()">Go Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100" *ngIf="docs=='changing'"><div
+                    class="d-flex justify-content-center w-100">
+                    <div
+                        class="spinner-border"
+                        role="status">
+                        <span
+                            class="sr-only">Loading...</span>
+                    </div></div>
+            </div>
+            <div class="w-100" *ngIf="docs===''"><div
+                    class="d-flex justify-content-center w-100">
+
+                    <p>No document found to load</p>
+                </div>
+            </div>
+            <div class="table-responsive"
+                *ngIf="docs!=='changing' && docs">
+
+                <table
+                    class="table table-bordered table-striped table-hover dataTable js-exportable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Document</th>
+                            <th>Detail</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                            <th>Download</th>
+                            <!-- <th>Delete</th> -->
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let i of docs">
+                            <td>{{i.UserName}}</td>
+                            <td>{{i.DocumentName}}</td>
+                            <td>{{i.DocumentDetail}}</td>
+                            <td>{{i.DocumentType}}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button
+                                        class="btn  btn-sm dropdown-toggle"
+                                        [ngClass]="{
+        'btn-success': i.isActive === 1,
+        'btn-warning': i.isActive === 0,
+        'btn-secondary': i.isActive === -1
+      }"
+                                        type="button"
+                                        id="actionMenuButton{{i.id}}"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{ i.isActive === 1 ? 'Approved' :
+                                        i.isActive === 0 ? 'Rejected' : 'Action'
+                                        }}
+                                    </button>
+
+                                    <div class="dropdown-menu"
+                                        [attr.aria-labelledby]="'actionMenuButton' + i.id">
+                                        <a class="dropdown-item"
+                                            (click)="approveDoc(i)">Approve</a>
+                                        <a class="dropdown-item"
+                                            (click)="rejectDoc(i)">Reject</a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <button
+                                    class="btn btn-primary btn-round"
+                                    (click)="downloadDoc(i)">
+                                    <i class="zmdi zmdi-copy"></i>
+                                    Download
+                                </button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="d-flex justify-content-center w-100">
+                <div class="pagination-controls mt-4">
+                    <button class="btn btn-info "
+                        (click)="loadDocs(currentPage - 1)"
+                        [disabled]="currentPage === 1"><i
+                            class="bi bi-arrow-left"></i></button>
+
+                    <span class="m-4">Page {{ currentPage }}</span>
+
+                    <button class="btn btn-info" [disabled]="docs === ''"
+                        (click)="loadDocs(currentPage + 1)"><i
+                            class="bi bi-arrow-right"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

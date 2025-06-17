@@ -51,8 +51,8 @@
                             <select class="form-control"
                                 [(ngModel)]="newDoc.DocumentTypeID"
                                 name="docType" required>
-                                <option *ngFor="let type of typeList"
-                                    [value]="type.id">{{ type.name }}</option>
+                                <option *ngFor="let i of typeList"
+                                    value="{{i.DocumentTypeID}}">{{i.DocumentType}}</option>
                             </select>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
 
                         <option
                             *ngFor="let i of typeList"
-                            value="{{i.id}}">{{i.name}}</option>
+                            value="{{i.DocumentTypeID}}">{{i.DocumentType}}</option>
 
                     </select>
                 </div>

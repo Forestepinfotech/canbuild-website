@@ -22,11 +22,7 @@ export class WorkDocumentsComponentOnInit {
   private adminuser: AdminUser = inject(AdminUser)
   private adminwork: AdminWork = inject(AdminWork)
   private toaster: ToastService = inject(ToastService)
-  typeList = [
-    { id: 201, name: 'Image' },
-    { id: 202, name: 'Inspection' },
-    { id: 203, name: 'Permit' }
-  ];
+  typeList: any = [];
   selectedType: number = 201;
   docs: any;
   token: string = "";
@@ -59,7 +55,21 @@ export class WorkDocumentsComponentOnInit {
       this.userId = userid;
       this.loadDocs(this.currentPage, this.pageSize);
 
-      console.log(this.work)
+      this.adminwork.GetDocId(this.token)
+        .subscribe({
+          next: (data) => {
+            if (data.Status) {
+              this.typeList = data.Result;
+
+            } else {
+              this.toaster.error('Error Loading Docs, Please try Again')
+
+            }
+          },
+          error: (err) => {
+            this.toaster.error('Error ' + err)
+          }
+        });
     }
   }
 
@@ -67,7 +77,7 @@ export class WorkDocumentsComponentOnInit {
 
   loadDocs(page: number = 1, size: number = 5) {
     this.currentPage = page;
-    this.docs = ""
+    this.docs = "changing"
     this.adminwork.GetWorkDoc(this.token, "-1", this.work.WorkID, this.work.UserID, this.work.JobID, this.work.JobName, page, size, this.selectedType)
       .subscribe({
         next: (data) => {
@@ -75,6 +85,7 @@ export class WorkDocumentsComponentOnInit {
             this.docs = data.Result;
 
           } else {
+            this.docs = "none"
             this.toaster.error('Error Loading Docs, Please try Again')
 
           }
@@ -182,7 +193,7 @@ export class WorkDocumentsComponentOnInit {
 
     const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
     // You need to construct a jobDetail object here with the required properties
-    const documentTypeName = this.typeList.find(t => t.id === this.newDoc.DocumentTypeID)?.name || '';
+    const documentTypeName = this.typeList.find((t: { DocumentTypeID: number; }) => t.DocumentTypeID === this.newDoc.DocumentTypeID)?.name || '';
     const workDocDetail = {
       JobID: this.work.JobID,
       JobName: this.work.JobName,

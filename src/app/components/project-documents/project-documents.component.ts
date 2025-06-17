@@ -8,6 +8,7 @@ import { AdminProject } from '../../Services/admin/projects';
 import { AdminUser } from '../../Services/admin/User';
 import { ToastService } from '../../Services/toast.service';
 import { ToastrService } from 'ngx-toastr';
+import { AdminWork } from '../../Services/admin/work';
 
 
 type DocumentEntry = {
@@ -36,11 +37,9 @@ export class ProjectDocumentsComponent implements OnInit {
   // Use inject function to get the service
   private adminJob: AdminJobDocs = inject(AdminJobDocs);
   private adminuser: AdminUser = inject(AdminUser)
+  private adminwork: AdminWork = inject(AdminWork)
   private toaster: ToastService = inject(ToastService)
-  typeList = [
-    { id: 201, name: 'Image' },
-    { id: 202, name: 'Inspection' },
-    { id: 203, name: 'Permit' }
+  typeList: any = [
   ];
   selectedType: number = 201;
   docs: any;
@@ -74,7 +73,21 @@ export class ProjectDocumentsComponent implements OnInit {
       this.companyId = companyID;
       this.userId = userid;
       this.loadDocs();
+      this.adminwork.GetDocId(this.token)
+        .subscribe({
+          next: (data) => {
+            if (data.Status) {
+              this.typeList = data.Result;
 
+            } else {
+              this.toaster.error('Error Loading Docs, Please try Again')
+
+            }
+          },
+          error: (err) => {
+            this.toaster.error('Error ' + err)
+          }
+        });
     }
   }
 
@@ -103,6 +116,7 @@ export class ProjectDocumentsComponent implements OnInit {
           this.docs = res.Result;
         } else {
           this.toaster.error('Error ', res.Message)
+          this.docs = ""
         }
 
       });
@@ -452,7 +466,7 @@ export class ProjectDocumentsComponent implements OnInit {
     }
     const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
     // You need to construct a jobDetail object here with the required properties
-    const documentTypeName = this.typeList.find(t => t.id === this.newDoc.DocumentTypeID)?.name || '';
+    const documentTypeName = this.typeList.find((t: { DocumentTypeID: number; }) => t.DocumentTypeID === this.newDoc.DocumentTypeID)?.name || '';
 
     selectedRoles.forEach(role => {
       const jobDetail = {

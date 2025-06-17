@@ -54,6 +54,7 @@ export class ProjectManageComponent implements OnInit {
 
         } else {
           this.toastr.error('Error ', response.Message)
+          this.jobList = 'error'
         }
       });
   }
