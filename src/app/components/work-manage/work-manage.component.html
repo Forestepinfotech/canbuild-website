@@ -83,6 +83,7 @@
                                             <th>Location</th>
                                             <th>Radius</th>
                                             <th>Priority</th>
+                                            <th>Assigned</th>
                                             <th>Color</th>
                                             <th>Requirements</th>
                                             <th>Change Status</th>
@@ -117,10 +118,10 @@
                                             <td>{{
                                                 work.JobAddress}}</td>
                                             <td>{{ work.Radius }}</td>
-                                            <td>{{ work.PriorityName
-                                                }}</td>
+                                            <td>{{ work.PriorityName}}</td>
+                                            <td>{{ work.UserName}}</td>
                                             <td
-                                                [style.backgroundColor]="work.Color_Hex">{{work.ColorName}}</td>
+                                                [style.backgroundColor]="work.Color_Hex"><small>{{work.ColorName}}</small> </td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button
