@@ -66,15 +66,7 @@ export class UserManageComponent implements OnInit {
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';
 
-      this.AdminUser.GetUsers(
-        companyID,
-        token,
-        '-1',
-        -1,
-        userTypeId,
-        1,
-        100
-      ).subscribe(response => {
+      this.AdminUser.GetUsers(companyID,token,'-1', -1, userTypeId, 1, 100  ).subscribe(response => {
         if (response.Status) {
           this.userList = response.Result;
         } else {

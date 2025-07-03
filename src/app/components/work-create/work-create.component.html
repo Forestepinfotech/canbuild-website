@@ -166,7 +166,7 @@
                                             dateFormat="H:i"
                                             [convertModelValue]="true"
                                             [altInput]="true"
-                                            [altFormat]="'h:i '" />
+                                            [altFormat]="'h:i K'" />
 
                                     </div>
                                 </div>
@@ -252,10 +252,7 @@
                                         <ng-container
                                             *ngFor="let i of color">
 
-                                            <option
-                                                value="{{i.ColorID}}"
-                                                *ngIf="i.ColorDetail">{{i.ColorDetail
-                                                }}</option>
+                                            <option value="{{i.ColorID}}"  *ngIf="i.ColorDetail">{{i.ColorDetail}}</option>
                                         </ng-container>
 
                                     </select>
