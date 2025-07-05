@@ -171,7 +171,7 @@ export class WorkManageComponent implements OnInit {
     this.selectedWork = job;
     this.docs = false; // <-- add this
     this.editing = true;
-    console.log("here")
+    
   }
   onCancel() {
     this.editing = false;
