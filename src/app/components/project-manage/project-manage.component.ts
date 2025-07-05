@@ -45,7 +45,7 @@ export class ProjectManageComponent implements OnInit {
     }
   }
   onUserTypeChange(status: number) {
-    this.jobList = 'changing'
+    this.jobList;
     this.selectedStatus = status;
     this.AdminProject.GetJob(this.token, this.companyId, -1, status, -1, -1)
       .subscribe((response) => {

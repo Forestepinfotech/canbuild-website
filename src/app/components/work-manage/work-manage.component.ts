@@ -12,9 +12,15 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-work-manage',
-  imports: [CommonModule, FormsModule, WorkEditComponent, WorkrMultiFilterPipe, WorkDocumentsComponentOnInit],
+  imports: [
+    CommonModule,
+    FormsModule,
+    WorkEditComponent,
+    WorkrMultiFilterPipe,
+    WorkDocumentsComponentOnInit,
+  ],
   templateUrl: './work-manage.component.html',
-  styleUrl: './work-manage.component.css'
+  styleUrl: './work-manage.component.css',
 })
 export class WorkManageComponent implements OnInit {
   selectedWork: any;
@@ -22,22 +28,25 @@ export class WorkManageComponent implements OnInit {
   jobSearch: string = '';
   docs: boolean = false;
 
-
-
-  constructor(private AdminWork: AdminWork, private AdminSpecifications: AdminSpecifications, private toastr: ToastrService) { }
-
-
-
+  constructor(
+    private AdminWork: AdminWork,
+    private AdminSpecifications: AdminSpecifications,
+    private toastr: ToastrService
+  ) {}
 
   selectedJob: any;
   jobList: any;
   editing: boolean = false;
-  token: string = "";
-  companyId: string = "";
-  userId: string = "";
+  token: string = '';
+  companyId: string = '';
+  userId: string = '';
 
   workList: any;
-  status: { statusName: string; statusId: number }[] = [{ statusName: 'pending', statusId: 1009 }, { statusName: 'Completed', statusId: 1008 }, { statusName: 'In Progress', statusId: 1012 }];
+  status: { statusName: string; statusId: number }[] = [
+    { statusName: 'pending', statusId: 1009 },
+    { statusName: 'Completed', statusId: 1008 },
+    { statusName: 'In Progress', statusId: 1012 },
+  ];
   workStatus: any;
 
   selectedSpecific: any;
@@ -45,14 +54,11 @@ export class WorkManageComponent implements OnInit {
   @ViewChild('scrollTop') scrollTopRef!: ElementRef;
   @ViewChild('scrollBottom') scrollBottomRef!: ElementRef;
 
-
-
   ngOnInit(): void {
     this.loadWork();
   }
 
-  loadWork()
-  {
+  loadWork() {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       this.workList = 'changing';
       const companyID = localStorage.getItem('CompanyID') || '';
@@ -95,70 +101,81 @@ export class WorkManageComponent implements OnInit {
     const checkbox = event.target as HTMLInputElement;
     work.isActive = checkbox.checked ? 1 : 0;
     const token = localStorage.getItem('Token') || '';
-    this.AdminWork.UpdateWorkStatus(token, work.WorkID, work.isActive).subscribe({
+    this.AdminWork.UpdateWorkStatus(
+      token,
+      work.WorkID,
+      work.isActive
+    ).subscribe({
       next: (response) => {
         if (response.Status) {
-          this.toastr.success('User Updated Successfully')
+          this.toastr.success('User Updated Successfully');
         } else {
-          this.toastr.error('Error ', response.Message)
+          this.toastr.error('Error ', response.Message);
         }
-
       },
       error: (err) => {
-        this.toastr.error('Error ' + err)
-      }
+        this.toastr.error('Error ' + err);
+      },
     });
-
   }
   onStatusToggle(specific: any, work: any, selected: boolean): void {
     if (selected) {
-      console.log(specific, work, selected)
+      console.log(specific, work, selected);
       const payload = {
         JobID: work.JobID,
         JobDetail: work.JobDetail,
         SpecificationID: specific.SpecificationID,
         Specification: specific.Specification,
         isDone: 1,
-        Done: "No",
+        Done: 'No',
         CompanyID: Number(this.companyId),
         UserID: Number(this.userId),
         isActive: 1,
         WorkID: work.WorkID,
-        WorkSubject: work.WorkSubject
+        WorkSubject: work.WorkSubject,
       };
-      this.AdminSpecifications.UpdateSpecification(this.token, payload).subscribe({
+      this.AdminSpecifications.UpdateSpecification(
+        this.token,
+        payload
+      ).subscribe({
         next: (res) => {
           if (res.Status) {
-            this.toastr.success('Updated the user status ')
-          }
-          else {
-            this.toastr.error('Error ', res.Message)
+            this.toastr.success('Updated the user status ');
+          } else {
+            this.toastr.error('Error ', res.Message);
           }
         },
         error: (err) => {
-          this.toastr.error('Error ' + err)
-        }
+          this.toastr.error('Error ' + err);
+        },
       });
     }
   }
 
   onStatusSelect(id: number, work: any) {
-    this.AdminWork.UpdateWorkCompleteStatus(this.token, this.userId, id, work.WorkID).subscribe({
+    this.AdminWork.UpdateWorkCompleteStatus(
+      this.token,
+      this.userId,
+      id,
+      work.WorkID
+    ).subscribe({
       next: (response) => {
         if (response.Status) {
-          this.toastr.success('Successfully updated the user')
-          const selectedStatus = this.status.find((s: any) => s.statusId === id);
+          this.toastr.success('Successfully updated the user');
+          const selectedStatus = this.status.find(
+            (s: any) => s.statusId === id
+          );
           if (selectedStatus) {
             work.StatusID = selectedStatus.statusId;
             work.StatusName = selectedStatus.statusName;
           }
         } else {
-          this.toastr.error('Error ', response.Message)
+          this.toastr.error('Error ', response.Message);
         }
       },
       error: (err) => {
-        this.toastr.error('Error ' + err)
-      }
+        this.toastr.error('Error ' + err);
+      },
     });
   }
   doc(user: any) {
@@ -171,7 +188,6 @@ export class WorkManageComponent implements OnInit {
     this.selectedWork = job;
     this.docs = false; // <-- add this
     this.editing = true;
-    
   }
   onCancel() {
     this.editing = false;
@@ -179,25 +195,25 @@ export class WorkManageComponent implements OnInit {
     this.loadWork();
   }
   onDelete(work: any) {
-    if (!confirm(`Are you sure you want to delete project: ${work.WorkSubject}?`)) {
+    if (
+      !confirm(`Are you sure you want to delete project: ${work.WorkSubject}?`)
+    ) {
       return;
     }
-    this.AdminWork.DeleteWork(this.token, work)
-      .subscribe({
-        next: (res) => {
-          if (res.Status) {
-            this.toastr.success('Work Deleted')
-            location.reload()
-          } else {
-            this.toastr.error('Error ', res.Message)
-          }
-        },
-        error: (err) => {
-          this.toastr.error('Error ' + err)
-        },
-      })
+    this.AdminWork.DeleteWork(this.token, work).subscribe({
+      next: (res) => {
+        if (res.Status) {
+          this.toastr.success('Work Deleted');
+          location.reload();
+        } else {
+          this.toastr.error('Error ', res.Message);
+        }
+      },
+      error: (err) => {
+        this.toastr.error('Error ' + err);
+      },
+    });
   }
-
 
   onSave(updatedWork: any) {
     const payload: WorkModel = {
@@ -242,21 +258,27 @@ export class WorkManageComponent implements OnInit {
       WorkingDays: updatedWork.WorkingDays,
       ProjectDateRange: updatedWork.ProjectDateRange,
       ColorDetail: updatedWork.ColorDetail,
-    }
-    this.AdminWork.UpdateWork(this.token, payload)
-      .subscribe({
-        next: (res) => {
-          if (res.Status) {
-            this.editing = false
-            this.toastr.success('Work Saved Successfully')
-            window.location.reload()
-          } else {
-            this.toastr.error('Error ', res.Message)
-          }
-        },
-        error: (err) => {
-          this.toastr.error('Error ') + err
+    };
+    this.AdminWork.UpdateWork(this.token, payload).subscribe({
+      next: (res) => {
+        if (res.Status) {
+          this.editing = false;
+          this.toastr.success('Work Saved Successfully');
+          window.location.reload();
+        } else {
+          this.toastr.error('Error ', res.Message);
         }
-      })
+      },
+      error: (err) => {
+        this.toastr.error('Error ') + err;
+      },
+    });
+  }
+
+  getCombinedDateTime(date: string, time: string): Date {
+    const d = new Date(date);
+    const [h, m, s] = time.split(':').map(Number);
+    d.setHours(h, m, s || 0);
+    return d;
   }
 }
