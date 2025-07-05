@@ -111,10 +111,8 @@
                                             <td>{{ work.WorkSubject }}</td>
                                             <td>{{work.WorkDetail}}</td>
                                             <td>{{work.ProjectDateRange}}</td>
-                                            <td>{{work.StartDate |
-                                                date:'MM/dd/yyyy'}}</td>
-                                            <td>{{work.EndDate |
-                                                date:'MM/dd/yyyy'}}</td>
+                                            <td>{{work.StartDate | date:'MM/dd/yyyy'}} {{work.StartTime}}</td>
+                                            <td>{{work.EndDate | date:'MM/dd/yyyy'}} {{work.EndTime}}</td>
                                             <td>{{
                                                 work.JobAddress}}</td>
                                             <td>{{ work.Radius }}</td>

@@ -48,8 +48,13 @@ export class WorkManageComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.loadWork();
+  }
+
+  loadWork()
+  {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      this.workList = 'changing'
+      this.workList = 'changing';
       const companyID = localStorage.getItem('CompanyID') || '';
       const token = localStorage.getItem('Token') || '';
       const userid = localStorage.getItem('UserID') || ' ';
@@ -57,37 +62,32 @@ export class WorkManageComponent implements OnInit {
       this.token = token;
       this.companyId = companyID;
       this.userId = userid;
-      this.AdminWork.GetWork(token, this.companyId, -1, -1, -1,)
-        .subscribe({
-          next: (res) => {
-            if (res.Status) {
-              this.workList = res.Result
-            } else {
-              this.toastr.error('Error ', res.Message)
-            }
-          },
-          error: (err) => {
-            this.toastr.error('Error ' + err)
+      this.AdminWork.GetWork(token, this.companyId, -1, -1, -1).subscribe({
+        next: (res) => {
+          if (res.Status) {
+            this.workList = res.Result;
+            console.log(this.workList);
+          } else {
+            this.toastr.error('Error ', res.Message);
           }
-        })
+        },
+        error: (err) => {
+          this.toastr.error('Error ' + err);
+        },
+      });
 
-      this.AdminSpecifications.GetSpecification(token, '-1', -1, -1)
-        .subscribe({
-          next: (value) => {
-            if (value.Status) {
-              this.specificList = value.Result;
-            } else {
-              this.toastr.error('Error ', value.Message)
-            }
-          },
-          error: (res) => {
-            this.toastr.error('Error ' + res)
+      this.AdminSpecifications.GetSpecification(token, '-1', -1, -1).subscribe({
+        next: (value) => {
+          if (value.Status) {
+            this.specificList = value.Result;
+          } else {
+            this.toastr.error('Error ', value.Message);
           }
-
-        })
-
-
-
+        },
+        error: (res) => {
+          this.toastr.error('Error ' + res);
+        },
+      });
     }
   }
 
@@ -176,6 +176,7 @@ export class WorkManageComponent implements OnInit {
   onCancel() {
     this.editing = false;
     this.docs = false;
+    this.loadWork();
   }
   onDelete(work: any) {
     if (!confirm(`Are you sure you want to delete project: ${work.WorkSubject}?`)) {

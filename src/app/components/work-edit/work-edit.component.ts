@@ -34,11 +34,13 @@ export class WorkEditComponent implements OnInit {
       const start = this.work?.StartDate ? new Date(this.work.StartDate) : new Date();
       const end = this.work?.EndDate ? new Date(this.work.EndDate) : new Date();
       // this.rangeValue = { from: start, to: end };
-
+      this.work.UserID = userid;
       if (typeof this.work.StartTime === 'string') {
         this.work.StartTime = new Date(`1970-01-01T${this.work.StartTime}`);
       }
-
+      if (typeof this.work.EndTime === 'string') {
+        this.work.EndTime = new Date(`1970-01-01T${this.work.EndTime}`);
+      }
 
 
       this.AdminDashboard.GetColorNotes(companyID, token, '-1')
@@ -71,7 +73,7 @@ export class WorkEditComponent implements OnInit {
     }
   }
   onSave() {
-    console.log("d")
+
     const selectedColorDetail = this.color.find(
       (i: any) => i.ColorID == this.work.ColorID
     );
@@ -88,12 +90,12 @@ export class WorkEditComponent implements OnInit {
       this.work.StartDate = new Date(this.work.StartDate ?? new Date()).toLocaleDateString(),
       this.work.EndDate = new Date(this.work.EndDate ?? new Date()).toLocaleDateString(),
 
-      this.work.PriorityName = selectedPriorirtyDetail.PriorityName
+    this.work.PriorityName = selectedPriorirtyDetail.PriorityName
     this.work.PriorityLevel = selectedPriorirtyDetail.PriorityLevel;
     this.work.StartTime = formatTime(this.work.StartTime)
     this.work.EndTime = formatTime(this.work.EndTime)
 
-    console.log(this.work)
+    //console.log(this.work)
     this.save.emit(this.work);
   }
 
